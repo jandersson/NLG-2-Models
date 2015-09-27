@@ -36,7 +36,7 @@ class nGramModel():
         return [(k,v) for k, v in orderedEstimates][:numberOfEstimates]
 
     def prob(self, word, previous):
-        return model[previous][word]
+        return self.model[previous][word]
 
     def probSentence(self, sentence):
         prob = 1
@@ -45,8 +45,6 @@ class nGramModel():
             prob *= self.model[sentence[i]].prob(sentence[i+1])
         return prob
 
-    def __repr__(self):
-        return this.model
 
 sentences = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='adventure')[:10000]]
 adventureModel = nGramModel(sentences,MLEProbDist,4)
