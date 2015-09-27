@@ -10,8 +10,6 @@ class nGramModel():
     def __init__(self, samples, estimator, n = 2):
         cfd = ConditionalFreqDist()
         for sent in samples:
-            sent.insert(0,'<s>')
-            sent.append('</s>')
             grams = nltk.ngrams(sent,n)
             if n == 2:
                 for (w1,w2) in list(grams):
@@ -36,7 +34,10 @@ class nGramModel():
         return [(k,v) for k, v in orderedEstimates][:numberOfEstimates]
 
     def prob(self, word, previous):
-        return self.model[previous][word]
+        return self.model[previous].prob(word)
+
+    def generate(self, word):
+        return self.model[word].generate()
 
     def probSentence(self, sentence):
         prob = 1
@@ -45,7 +46,7 @@ class nGramModel():
             prob *= self.model[sentence[i]].prob(sentence[i+1])
         return prob
 
-
+'''
 sentences = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='adventure')[:10000]]
 adventureModel = nGramModel(sentences,MLEProbDist,4)
 
@@ -53,3 +54,4 @@ testSentence = ["<s>","i", "can", "like", "apples","</s>"]
 #print(adventureModel.probSentence(testSentence))
 
 print(adventureModel.estimateWord('in the car',5))
+'''
