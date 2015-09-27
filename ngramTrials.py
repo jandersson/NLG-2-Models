@@ -9,17 +9,14 @@ class nGramModel():
 
     def __init__(self, samples, estimator, n = 2):
         cfd = ConditionalFreqDist()
-        for sent in samples:
             sent.insert(0,'<s>')
             sent.append('</s>')
         for sent in samples:
-            for (w1,w2) in list(zip(sent[:-1],sent[1:])):
+            for (w1,w2) in list(nltk.bigrams(sent)):
                 cfd[w1][w2] +=1
         self.model = ConditionalProbDist(cfd, estimator)
 
     def estimateWord(self, word, numberOfEstimates):
-        
-        print("Grouping all the bigram by first word")
         wordEstimates = {}
         for key in self.model[word].freqdist():
             #print(self.model[word].prob(key))
