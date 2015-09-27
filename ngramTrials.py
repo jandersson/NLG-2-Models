@@ -11,15 +11,17 @@ class nGramModel():
 		for sent in samples:
 			sent.insert(0,'<s>')
 			sent.append('</s>')
-		for sent in s:
+		for sent in samples:
 			for (w1,w2) in list(zip(sent[:-1],sent[1:])):
 				cfd[w1][w2] +=1
 		self.model = ConditionalProbDist(cfd, estimator)
 
 
-s = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='adventure')[:2]]
 
-model = nGramModel(s,MLEProbDist).model
+
+sentences = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='adventure')[:2]]
+
+model = nGramModel(sentences,MLEProbDist).model
 
 test = ["<s>","i", "can", "like", "apples","</s>"]
 p = 1
