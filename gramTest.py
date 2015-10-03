@@ -3,11 +3,12 @@ import nltk.collocations
 import nltk.corpus
 import collections
 from nltk.corpus import gutenberg
+from nltk.corpus import brown
 
 corpus = gutenberg.words('austen-persuasion.txt');
 
 def buildModel(iCorpus):
-	'''
+	"""
 	Instead of using likelihood_ratio
 
 	we could try and use any of these methods
@@ -19,7 +20,7 @@ def buildModel(iCorpus):
 	likelihood_ratio - Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
 	poisson_stirling - Scores ngrams using the Poisson-Stirling measure."
 	jaccard - Scores ngrams using the Jaccard index.
-	'''
+	"""
 	global scoredBigrams
 	bgm    = nltk.collocations.BigramAssocMeasures()
 	print("Splitting up words in the dataset")
@@ -31,22 +32,28 @@ def buildModel(iCorpus):
 
 def estimateWord(word, scoredBigrams, numberOfEstimates):
 	print("Grouping all the bigram by first word")
-	# Group bigrams by first word in bigram.                                        
+	# Group bigrams by first word in bigram.
 	prefix_keys = collections.defaultdict(list)
 	for key, scores in scoredBigrams:
-	   prefix_keys[key[0]].append((key[1], scores))
+		prefix_keys[key[0]].append((key[1], scores))
 
 	print("Sorting the bigrams")
-	# Sort keyed bigrams by strongest association.                                  
+	# Sort keyed bigrams by strongest association.
 	for key in prefix_keys:
-	   prefix_keys[key].sort(key = lambda x: -x[1])
+		prefix_keys[key].sort(key = lambda x: -x[1])
 	return prefix_keys[word][:numberOfEstimates]
 
 
 
+TaggedBrown = [[w.lower() for w in s if w.isalnum()] for s in brown.tagged_words()[:10000]]
+print(TaggedBrown)
+for item in TaggedBrown:
+	print(item)
+WordsBrown = [item[0] for item in TaggedBrown if item != []]
+model = buildModel(WordsBrown)
 
-model = buildModel(corpus)
+
 print("Most likely words to come after 'therefore'")
-print(estimateWord('therefore', model,5))
+print(estimateWord('i', model,5))
 
 
