@@ -7,6 +7,8 @@ import collections
 
 class nGramModel():
 
+
+    
     def __init__(self, samples, estimator, n = 2):
         cfd = ConditionalFreqDist()
         for sent in samples:
@@ -16,13 +18,11 @@ class nGramModel():
                     cfd[w1][w2] +=1
             if n == 3:
                 for (w1,w2,w3) in list(grams):
+                    # This is what we want: cfd[(w1,w2)][w3] +=1
                     cfd[w1+ " " +w2][w3] +=1
             if n == 4:
                 for (w1,w2,w3,w4) in list(grams):
                     cfd[w1+ " " +w2+ " " +w3][w4] +=1
-            if n == 5:
-                for (w1,w2,w3,w4,w5) in list(grams):
-                    cfd[w1+ " " +w2+ " " +w3+ " " +w4][w5] +=1
         self.model = ConditionalProbDist(cfd, estimator)
 
     def estimateWord(self, word, numberOfEstimates):
