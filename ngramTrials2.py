@@ -14,12 +14,12 @@ class nGramModel():
     def __init__(self, TaggedSentences, estimator, n = 2):
         self.n = n
         self.models = []
-
+        print("Starting the training of model")
         if n > 1: ##bigrams
 
             self.addPseudo(TaggedSentences,1)
             TaggedTuples = (item for sublist in TaggedSentences for item in sublist)
-            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples if t1.isalnum()]
+            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples if (t1.isalnum() or t1 in("<s>","</s>"))]
             biGrams = nltk.ngrams(TaggedTuples,2)
             cfdBiGrams = ConditionalFreqDist()
             for (gram1,gram2) in list(biGrams):
@@ -30,7 +30,7 @@ class nGramModel():
         if n > 2: #triGrams
             self.addPseudo(TaggedSentences,1)
             trigram_tuples = (item for sublist in TaggedSentences for item in sublist)
-            tagged_trigram_tuples = [(t1.lower(), t2) for t1, t2 in trigram_tuples]
+            tagged_trigram_tuples = [(t1.lower(), t2) for t1, t2 in trigram_tuples if (t1.isalnum() or t1 in("<s>","</s>"))]
             triGrams = nltk.ngrams(tagged_trigram_tuples,3)
             cfdTriGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3) in list(triGrams):
@@ -41,13 +41,14 @@ class nGramModel():
         if n > 3: #quadGrams
             self.addPseudo(TaggedSentences,1)
             TaggedTuples = (item for sublist in TaggedSentences for item in sublist)
-            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples]
+            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples if (t1.isalnum() or t1 in("<s>","</s>"))]
             quadGrams = nltk.ngrams(TaggedTuples,4)
             cfdQuadGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3,gram4) in list(quadGrams):
                 cfdQuadGrams[(gram1,gram2,gram3)][gram4] +=1
             self.models.append(ConditionalProbDist(cfdQuadGrams, estimator))
             self.model = self.models[2]
+        print("Done training the model, moving onto more important things!")
 
     def addPseudo(self, TaggedSentences,count):
         for sent in TaggedSentences:
@@ -55,27 +56,13 @@ class nGramModel():
                 sent.insert(0,("<s>","<s>"))
                 sent.append(("</s>","</s>"))
 
-    def generateOld(self, context):
-        tokenized = nltk.word_tokenize(context.lower())
-        tagged = nltk.pos_tag(tokenized, tagset='universal')
+    def generate(self,context):
+        print("Finding the most probable word given a certain context")
+        return self.generateRec(context,self.n)[0]
 
-        if len(tagged) < self.n:
-            for i in range(self.n -len(tagged)-1):
-                tagged.insert(0, ("<s>","<s>"))
-        tagged = tagged[-(self.n - 1):]
-        grams =  list(nltk.ngrams(tagged, self.n-1))[0][0] if self.n == 2  else list(nltk.ngrams(tagged, self.n-1))[0]
-        ret = ""
-        try:
-            ret = self.model[grams].generate()
-        except:
-            ret = ""
-        return ret
-
-    def generateRec(self, context, curNGram = -1):
-        if curNGram == -1:
-            curNGram = self.n
+    def generateRec(self, context,curNGram):
         if curNGram == 1:
-            return ""
+            return ("","")
         tokenized = nltk.word_tokenize(context.lower())
         tagged = nltk.pos_tag(tokenized, tagset='universal')
 
@@ -84,20 +71,35 @@ class nGramModel():
                 tagged.insert(0, ("<s>","<s>"))
         tagged = tagged[-(curNGram - 1):]
         grams =  list(nltk.ngrams(tagged, curNGram-1))[0][0] if curNGram == 2  else list(nltk.ngrams(tagged, curNGram-1))[0]
-        ret = ""
         try:
-            ret = self.models[curNGram-2][grams].generate()
+            return self.models[curNGram-2][grams].generate()
         except:
-            ret = self.generateRec(context, curNGram-1)
-        return ret
+            try:
+                return self.generateRec(context, curNGram-1)
+            except:
+                return ""
+        
 
 
-TaggedCorpus = [w for w in brown.tagged_sents(tagset='universal')[:10000]]
+print("Loading the corpus")
+TaggedCorpus = [w for w in brown.tagged_sents(tagset='universal')]
 model = nGramModel(TaggedCorpus, MLEProbDist, 4)
 # print(model.generate("problem"))
-print(model.generateRec("the man who won the man"))
-print(model.generateRec("the"))
-print(model.generateRec("horse"))
+model.generate("the man who won the man")
+model.generate("blarg")
+model.generate("horse")
+
+print("Starting to generate the sentence")
+text = ""
+prevTk = "the"
+tk = ""
+while(tk != "</s>"):
+    text += tk + " "
+    tk = model.generate(prevTk)
+    prevTk = tk
+print(text.strip())
+
+
 
 # ('in', 'IN'), ('the', 'AT')
 # ('which', 'WDT'), ('was', 'BEDZ')
