@@ -83,7 +83,7 @@ class nGramModel():
             for i in range(self.n -len(tagged)-1):
                 tagged.insert(0, ("<s>","<s>"))
         tagged = tagged[-(self.n - 1):]
-        grams = list(nltk.ngrams(tagged, self.n-1))[0]
+        grams =  list(nltk.ngrams(tagged, self.n-1))[0][0] if self.n == 2  else list(nltk.ngrams(tagged, self.n-1))[0]
         ret = ""
         try:
             ret = self.model[grams].generate()
@@ -99,9 +99,9 @@ class nGramModel():
 
 model = nGramModel([()], MLEProbDist, 3)
 # print(model.generate("problem"))
-print(model.generate("The"))
-print(model.generate2("The"))
-print(model.generate("The horse is"))
+print(model.generate("the man"))
+print(model.generate("the"))
+print(model.generate("horse"))
 
 # ('in', 'IN'), ('the', 'AT')
 # ('which', 'WDT'), ('was', 'BEDZ')
