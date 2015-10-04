@@ -11,16 +11,15 @@ class nGramModel():
 
 
     
-    def __init__(self, samples, estimator, n = 2):
+    def __init__(self, TaggedSentences, estimator, n = 2):
         self.n = n
         self.models = []
-        TaggedSentences = [w for w in brown.tagged_sents(tagset='universal')[:1000]]
 
         if n > 1: ##bigrams
 
             self.addPseudo(TaggedSentences,1)
             TaggedTuples = (item for sublist in TaggedSentences for item in sublist)
-            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples]
+            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples if t1.isalnum()]
             biGrams = nltk.ngrams(TaggedTuples,2)
             cfdBiGrams = ConditionalFreqDist()
             for (gram1,gram2) in list(biGrams):
@@ -50,32 +49,13 @@ class nGramModel():
             self.models.append(ConditionalProbDist(cfdQuadGrams, estimator))
             self.model = self.models[2]
 
-
-    def estimateWord(self, context, numberOfEstimates):
-        tokenized = nltk.word_tokenize(context.lower())
-        tagged = nltk.pos_tag(tokenized, tagset='universal')
-
-        if self.n == 3:
-            biGram = list(nltk.ngrams(tagged, 2))[0]
-            wordEstimates = {}
-            print(self.model.generate(biGram))
-            for value in self.model[biGram].freqdist():
-                wordEstimates[value] = self.model[biGram].prob(value)
-            orderedEstimates = ((k, wordEstimates[k]) for k in sorted(wordEstimates, key=wordEstimates.get, reverse=True))
-            print([(k,v) for k, v in orderedEstimates][:numberOfEstimates])
-            return
-
     def addPseudo(self, TaggedSentences,count):
         for sent in TaggedSentences:
             for i in range(count):
                 sent.insert(0,("<s>","<s>"))
                 sent.append(("</s>","</s>"))
 
-
-    def prob(self, word, previous):
-        return self.model[previous].prob(word)
-
-    def generate(self, context):
+    def generateOld(self, context):
         tokenized = nltk.word_tokenize(context.lower())
         tagged = nltk.pos_tag(tokenized, tagset='universal')
 
@@ -91,17 +71,33 @@ class nGramModel():
             ret = ""
         return ret
 
-    def probSentence(self, sentence):
-        prob = 1
-        for i in range(len(sentence)-1):
-            prob *= self.model[sentence[i]].prob(sentence[i+1])
-        return prob
+    def generateRec(self, context, curNGram = -1):
+        if curNGram == -1:
+            curNGram = self.n
+        if curNGram == 1:
+            return ""
+        tokenized = nltk.word_tokenize(context.lower())
+        tagged = nltk.pos_tag(tokenized, tagset='universal')
 
-model = nGramModel([()], MLEProbDist, 3)
+        if len(tagged) < curNGram:
+            for i in range(curNGram -len(tagged)-1):
+                tagged.insert(0, ("<s>","<s>"))
+        tagged = tagged[-(curNGram - 1):]
+        grams =  list(nltk.ngrams(tagged, curNGram-1))[0][0] if curNGram == 2  else list(nltk.ngrams(tagged, curNGram-1))[0]
+        ret = ""
+        try:
+            ret = self.models[curNGram-2][grams].generate()
+        except:
+            ret = self.generateRec(context, curNGram-1)
+        return ret
+
+
+TaggedCorpus = [w for w in brown.tagged_sents(tagset='universal')[:10000]]
+model = nGramModel(TaggedCorpus, MLEProbDist, 4)
 # print(model.generate("problem"))
-print(model.generate("the man"))
-print(model.generate("the"))
-print(model.generate("horse"))
+print(model.generateRec("the man who won the man"))
+print(model.generateRec("the"))
+print(model.generateRec("horse"))
 
 # ('in', 'IN'), ('the', 'AT')
 # ('which', 'WDT'), ('was', 'BEDZ')
