@@ -45,6 +45,7 @@ class nGramModel():
 
 
     def countNgrams(self, grams, n, smoothingF):
+
         if (n > 2):
             self.model = rec_dd()
         else:
