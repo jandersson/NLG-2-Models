@@ -44,40 +44,43 @@ class nGramModel():
         #self.model = ConditionalProbDist(cfd, estimator)
 
 
-    def countNgrams(self, grams, n, smoothingF):
+    def countNgrams(self, grams, n, smoothingF, isTagged=False):
 
-        if (n > 2):
-            self.model = rec_dd()
+        if isTagged:
+            pass
         else:
-            self.model = ConditionalFreqDist()
+            if (n > 2):
+                self.model = rec_dd()
+            else:
+                self.model = ConditionalFreqDist()
 
-        for item in list(grams):
-            item = list(item)
-            # For each new gram
-            thisDict = self.model  # point to top-level dictionary 
-            thisN = n # reset n-counter
+            for item in list(grams):
+                item = list(item)
+                # For each new gram
+                thisDict = self.model  # point to top-level dictionary
+                thisN = n # reset n-counter
 
-            while(thisN >= 2):
-                if( thisN > 3):
-                    wn = item.pop(0) # pop first word in gram
-                    thisDict = thisDict[wn] ## returns dict.
-                    thisN -= 1
+                while(thisN >= 2):
+                    if( thisN > 3):
+                        wn = item.pop(0) # pop first word in gram
+                        thisDict = thisDict[wn] ## returns dict.
+                        thisN -= 1
 
-                elif (thisN == 3):
-                    w3 = item.pop(0)
-                    if w3 not in thisDict:
-                        thisDict[w3] = ConditionalFreqDist()    
-                    
-                    thisDict = thisDict[w3]
-                    thisN -= 1
+                    elif (thisN == 3):
+                        w3 = item.pop(0)
+                        if w3 not in thisDict:
+                            thisDict[w3] = ConditionalFreqDist()
 
-                elif (thisN == 2):
-                    w2 = item.pop(0)
-                    thisDict[w2][item.pop(0)] += 1
-                    thisN -= 1
+                        thisDict = thisDict[w3]
+                        thisN -= 1
 
-        self.probNGrams(n,self.model,smoothingF)
-        return
+                    elif (thisN == 2):
+                        w2 = item.pop(0)
+                        thisDict[w2][item.pop(0)] += 1
+                        thisN -= 1
+
+            self.probNGrams(n,self.model,smoothingF)
+            return
 
     def probNGrams(self, n, dic, smoothingF):
         if (n == 2): # Special for bigrams
