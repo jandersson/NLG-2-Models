@@ -8,6 +8,21 @@ from math import log
 import warnings
 warnings.filterwarnings("ignore")
 
+class utils:
+    @staticmethod
+    def generateSentenceFromModel(model, smoothingName,count):
+        print("-----------------Starting sentence generations-----------------")
+        print("GramCount:"+ str(model.n));
+        print("Smoothing:"+ smoothingName);
+        model.createSentences(count)
+        print("-----------------Ending sentence generations-----------------")
+
+    @staticmethod
+    def generateTrainAndTestSets(tCorpus):
+        split = 9*len(tCorpus)//10
+        return tCorpus[:split], tCorpus[split:] #train, test
+
+
 class nGramModel():
 
     def __init__(self, TaggedSentences, estimator, n = 2):
@@ -112,24 +127,10 @@ class nGramModel():
         return 2**e
 
 
-def printTags(sent):
-    tokenized = nltk.word_tokenize(sent.lower())
-    tagged = nltk.pos_tag(tokenized, tagset='universal')
-
-def generateSentenceFromModel(model, smoothingName,count):
-    print("-----------------Starting sentence generations-----------------")
-    print("GramCount:"+ str(model.n));
-    print("Smoothing:"+ smoothingName);
-    model.createSentences(count)
-    print("-----------------Ending sentence generations-----------------")
-
-def generateTrainAndTestSets(tCorpus):
-    split = 9*len(tCorpus)//10
-    return tCorpus[:split], tCorpus[split:] #train, test
 
 TaggedCorpus = [w for w in brown.tagged_sents(tagset='universal')]
 gramCount = 3
-train, test = generateTrainAndTestSets(TaggedCorpus);
+train, test = utils.generateTrainAndTestSets(TaggedCorpus);
 #model1 = nGramModel(TaggedCorpus, probability.MLEProbDist, gramCount)
 #model3 = nGramModel(TaggedCorpus, probability.LaplaceProbDist, gramCount)
 #model4 = nGramModel(TaggedCorpus, probability.ELEProbDist, gramCount)
@@ -138,5 +139,5 @@ print(model7.perplexity(test))
 #generateSentenceFromModel(model1,"MLEProbDist",20)
 #generateSentenceFromModel(model3,"LaplaceProbDist",20)
 #generateSentenceFromModel(model4,"ELEProbDist",20)
-generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
+utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
 
