@@ -21,8 +21,7 @@ def main():
     testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
 
     ## HERE BE DEBUGGING
-
-    print(testModelwordtags.model)
+    generateText(testModelGrammar, 1)
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
@@ -67,7 +66,6 @@ def addPseudo(sents, n, tag=False):
             for _ in range(n-1):
                 s.insert(0,'<s>')
                 s.append('</s>')
-    print(sents)
 
 def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
     #TODO: Pass in word tag pairs bigram as word model
@@ -128,7 +126,6 @@ def generateText(model, sents):
         while(tk != "</s>"):
             text += tk + " "
             tk = model.generate(list(prevTk))
-            print("tk: " + str(tk))
             prevTk.pop(0)
             prevTk.append(tk)
 
