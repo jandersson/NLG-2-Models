@@ -4,33 +4,20 @@ from nltk.probability import ELEProbDist
 from math import log
 
 def main():
-    sentences = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='adventure')]
-    rSentences = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='religion')]
-
-    addPseudo(rSentences)
-    addPseudo(sentences) # Add pseudowords
-    split = 9*len(sentences)//10
-    train = sentences[:split]
-    test = sentences[split:]
-
-
-    test2 = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='religion')][:len(test)]
-    addPseudo(test2) # Add pseudowords
-
-    # Train models
-    adventureModel = nGramModel(train,ELEProbDist)
-    religionModel = nGramModel(rSentences,ELEProbDist)
-
-    p = perplexity(adventureModel,test)
-    p2 = perplexity(adventureModel,test2)
+    testModel = generateModelFromSentences(brown.sents(categories='adventure'), ELEProbDist, 3)
+    #p = perplexity(adventureModel,test)
+    #p2 = perplexity(adventureModel,test2)
 
     # Generate cool shit
-    generateText(adventureModel, 5)
-    print()
-    generateText(religionModel, 5)
+    generateText(testModel, 5)
+    #generateText(religionModel, 5)
     #print(p, p2)
 
 
+def generateModelFromSentences(sents, smoothingF, n):
+    sents = [[w.lower() for w in s if w.isalnum()] for s in sents]
+    addPseudo(sents,n)
+    return nGramModel(sents, smoothingF, n)
 
 def entropy(model, test):
     p = 0
@@ -47,21 +34,28 @@ def perplexity(model, test):
     return 2**e
 
 #mutator
-def addPseudo(sents):
+def addPseudo(sents, n):
     for s in sents:
-        s.insert(0,'<s>')
-        s.append('</s>')
+        for _ in range(n-1):
+            s.insert(0,'<s>')    
+            s.append('</s>')
 
 def generateText(model, sents):
+    prevTk = list()
+    lN = model.getOrder()
     for _ in range(sents):
         text = ""
-        prevTk = "<s>"
+        for _ in range(lN-1):
+            prevTk.append("<s>")
         tk = ""
         while(tk != "</s>"):
             text += tk + " "
-            tk = model.generate(prevTk)
-            prevTk = tk
+            tk = model.generate(list(prevTk))
+            prevTk.pop(0)
+            prevTk.append(tk)
+
         print(text.strip())
+        prevTk = list()
 
 if __name__ == '__main__':
     main()
