@@ -10,7 +10,7 @@ def main():
     ##NGRAM MODEL FOR GRAMMAR
     sents = brown.tagged_sents(categories='news', tagset='universal')
     sentences_of_tags = []
-    #Pull out the tags and make sentences of just tags
+    #Pull out the tags and make sentences of just tags!
     for sentence in sents:
         sentence_tags = [tag for (word, tag) in sentence]
         sentences_of_tags.append(sentence_tags)
@@ -20,12 +20,14 @@ def main():
     testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
 
 
+    ## HERE BE DEBUGGING
+    print(testModelwordtags.tagged)
 
 
 def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
     if isTagged:
         addPseudo(sents, n, True)
-        return nGramModel(sents, smoothingF, n)
+        return nGramModel(sents, smoothingF, n, True)
     else:
         sents = [[w.lower() for w in s if w.isalnum()] for s in sents]
         addPseudo(sents,n)
