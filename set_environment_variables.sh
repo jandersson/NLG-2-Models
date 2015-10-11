@@ -1,0 +1,1 @@
+export NLTK_DATA="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/nltk_data"
