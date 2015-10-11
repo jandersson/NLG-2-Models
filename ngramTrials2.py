@@ -11,6 +11,12 @@ warnings.filterwarnings("ignore")
 class utils:
     @staticmethod
     def generateSentenceFromModel(model, smoothingName,count):
+        """
+        Prints out and generates a certain count of sentences from a given model
+        :param model: The nGram model
+        :param smoothingName: The name of the smoothing technique that was used to train the model
+        :param count: How many sentences should be printed out
+        """
         print("-----------------Starting sentence generations-----------------")
         print("GramCount:"+ str(model.n));
         print("Smoothing:"+ smoothingName);
@@ -19,13 +25,24 @@ class utils:
 
     @staticmethod
     def generateTrainAndTestSets(tCorpus):
+        """
+        Splits a given dataset into test and training sets
+        :param tCorpus: The corpus of tagged sentences
+        :return: traning and test sets
+        """
         split = 9*len(tCorpus)//10
         return tCorpus[:split], tCorpus[split:] #train, test
 
 
-class nGramModel():
+class nGramModel:
 
-    def __init__(self, TaggedSentences, estimator, n = 2):
+    def __init__(self, TaggedSentences, smoothing, n = 2):
+        """
+        Trains the model. Trains all models from n to 2
+        :param TaggedSentences: List of tagged sentences
+        :param smoothing: Smoothing technique
+        :param n: gram count
+        """
         self.n = n
         self.models = []
         print("Training the model")
@@ -38,7 +55,7 @@ class nGramModel():
             cfdBiGrams = ConditionalFreqDist()
             for (gram1,gram2) in list(biGrams):
                 cfdBiGrams[gram1][gram2] +=1
-            self.models.append(ConditionalProbDist(cfdBiGrams, estimator))
+            self.models.append(ConditionalProbDist(cfdBiGrams, smoothing))
             self.model = self.models[0]
 
         if n > 2: #triGrams
@@ -48,7 +65,7 @@ class nGramModel():
             cfdTriGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3) in list(triGrams):
                 cfdTriGrams[(gram1,gram2)][gram3] +=1
-            self.models.append(ConditionalProbDist(cfdTriGrams, estimator))
+            self.models.append(ConditionalProbDist(cfdTriGrams, smoothing))
             self.model = self.models[1]
 
         if n > 3: #quadGrams
@@ -58,29 +75,57 @@ class nGramModel():
             cfdQuadGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3,gram4) in list(quadGrams):
                 cfdQuadGrams[(gram1,gram2,gram3)][gram4] +=1
-            self.models.append(ConditionalProbDist(cfdQuadGrams, estimator))
+            self.models.append(ConditionalProbDist(cfdQuadGrams, smoothing))
             self.model = self.models[2]
         print("Done training the model, moving onto more important things!")
 
     def addPseudo(self, TaggedSentences,count):
+        """
+        Adds start and end sentence pseudo tokens in the grams
+        :param TaggedSentences: List of tagged sentences
+        :param count: How many tokens we should add
+        """
         for sent in TaggedSentences:
             for i in range(count):
                 sent.insert(0,("<s>","<s>"))
                 sent.append(("</s>","</s>"))
 
-    def listToTuples(self,sents):
+    def listToTuples(self, sents):
+        """
+        Utility functions that returns the given list as a set of tuples
+        :param sents: A list of sentences
+        :return: The input list as a set of tuples
+        """
         t = (item for sublist in sents for item in sublist)
         t = [(t1.lower(), t2) for t1, t2 in t if (t1.isalpha() or t1 in("<s>","</s>"))]
         return t
 
     def prob(self, word, context):
+        """
+        Returns the likelyhood of a word given it's context
+        :param word: Word to check the probability of
+        :param context: The context, in bigrams that would be the previous word
+        :return: The likelyhood if this word give it's context
+        """
         return self.model[context].prob(word)
 
 
     def generate(self,context):
+        """
+        A parent functions that returns the outcome from the recursive function
+        :param context: The sentence up to this point.
+        :return: The most probable next word
+        """
         return self.generateRec(context,self.n)[0]
 
     def generateRec(self, context,curNGram):
+        """
+        Recursive function that generates the next word given the context.
+        If it does not find a word within the current nGram it falls back to a n-1Gram model
+        :param context: The sentence up this point
+        :param curNGram: Recursive parameter that accounts for which nGram model to find word from
+        :return: The word that was most probable
+        """
         if curNGram == 1:
             return ("</s>","</s>")
         tokenized = nltk.word_tokenize(context.lower())
@@ -99,17 +144,27 @@ class nGramModel():
                 return "</s>"
 
     def createSentences(self,count = 1):
+        """
+        Creates sentences
+        :param count: The number of sentences to generate
+        """
         for i in range(count):
             text = ""
             tk = ""
-            while(tk != "</s>"):
+            while tk != "</s>":
                 text += tk + " "
                 tk = self.generate(text.strip())
             print(text.strip().capitalize()+".")
 
     def entropy(self, testSet):
+        """
+        Calculates the entopy of the model given a testset
+        :param testSet: Trainingset
+        :return: Entropy
+        """
         print("Calculating entropy for a given testSet")
         p = 0
+        counter = 0;
         self.addPseudo(testSet,self.n)
         t = self.listToTuples(testSet)
         grams = nltk.ngrams(t,self.n)
@@ -117,12 +172,17 @@ class nGramModel():
             context =  tuple(gram)[:self.n-1]
             word =  tuple(gram)[self.n-1]
             prob = self.prob(word,context)
+            counter += 1
             if prob > 0:
-                test = -log(prob)
-            p += test
-        return p/len(t)
+                p += -log(prob)
+        return p/counter
 
     def perplexity(self, testSet):
+        """
+        Calculates the perplexity of the model given a test set
+        :param testSet: test set
+        :return: perplexity
+        """
         e = self.entropy(testSet)
         return 2**e
 
@@ -139,5 +199,5 @@ print(model7.perplexity(test))
 #generateSentenceFromModel(model1,"MLEProbDist",20)
 #generateSentenceFromModel(model3,"LaplaceProbDist",20)
 #generateSentenceFromModel(model4,"ELEProbDist",20)
-utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
+#utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
 

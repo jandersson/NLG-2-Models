@@ -22,6 +22,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+nltk_data
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -55,3 +56,14 @@ docs/_build/
 
 # PyBuilder
 target/
+testing.py
+testing2.py
+workfile
+.idea/.name
+.idea/AI-FinalProject.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
