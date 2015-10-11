@@ -16,33 +16,7 @@ class nGramModel():
         for sent in samples:
             self.grams += list(nltk.ngrams(sent,n)) # get iterator over ngrams
         
-        #print(self.grams[:100])
-
         self.countNgrams(self.grams, n, estimator) # sets self.model
-
-        print("NO ERRORS!!!!")
-
-        '''
-        if n == 2:
-            for (w1,w2) in list(grams):
-                cfd[w1][w2] +=1
-        
-
-        if n == 3:
-            for (w1,w2,w3) in list(grams):
-                cfd[(w1,w2)][w3] +=1
-                cfd[w1][w2] [w3] += 1
-
-                #cfd[w1+ " " +w2][w3] +=1
-        if n == 4:
-            for (w1,w2,w3,w4) in list(grams):
-
-                cfd[(w1,w2,w3)][w4]
-
-                cfd[w1+ " " +w2+ " " +w3][w4] +=1
-        '''
-
-        #self.model = ConditionalProbDist(cfd, estimator)
 
 
     def countNgrams(self, grams, n, smoothingF):
@@ -77,7 +51,11 @@ class nGramModel():
 
                 elif (thisN == 2):
                     w2 = item.pop(0)
-                    thisDict[w2][item.pop(0)] += 1
+                    w1 = item.pop(0)
+                    if self.tagged:
+                        w2 = w2[1] #just get the tag
+                        w1 = w1[0] #just get the word
+                    thisDict[w2][w1] += 1
                     thisN -= 1
 
         self.probNGrams(n,self.model,smoothingF)

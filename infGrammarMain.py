@@ -21,10 +21,13 @@ def main():
     testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
 
     ## HERE BE DEBUGGING
-    assert(testModelwordtags.tagged == True)
+
     print(testModelwordtags.model)
+
+    ## TESTS
     assert(testModelGrammar.tagged == False)
-    print(testModelGrammar.tagged)
+    assert(testModelwordtags.tagged == True)
+    assert('START' in testModelwordtags.model)
 
 def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
     if isTagged:
