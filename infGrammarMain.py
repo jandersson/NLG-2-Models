@@ -1,4 +1,4 @@
-from ngramTrials import nGramModel
+from infGrammarNgram import nGramModel
 from nltk.corpus import brown
 from nltk.probability import ELEProbDist
 from math import log
@@ -7,7 +7,6 @@ def main():
     testModel = generateModelFromSentences(brown.sents(categories='adventure'), ELEProbDist, 3)
     #p = perplexity(adventureModel,test)
     #p2 = perplexity(adventureModel,test2)
-
     # Generate cool shit
     generateText(testModel, 5)
     #generateText(religionModel, 5)
