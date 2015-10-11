@@ -8,7 +8,8 @@ import nltk
 def main():
 
     ##NGRAM MODEL FOR GRAMMAR
-    sents = brown.tagged_sents(categories='news', tagset='universal')
+    sents_ = brown.tagged_sents(categories='news', tagset='universal')
+    sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sents:
@@ -19,10 +20,11 @@ def main():
     ##NGRAM MODEL FOR TAGS AND WORDS
     testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
 
-
     ## HERE BE DEBUGGING
-    print(testModelwordtags.tagged)
-
+    assert(testModelwordtags.tagged == True)
+    print(testModelwordtags.model)
+    assert(testModelGrammar.tagged == False)
+    print(testModelGrammar.tagged)
 
 def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
     if isTagged:
@@ -62,6 +64,7 @@ def addPseudo(sents, n, tag=False):
             for _ in range(n-1):
                 s.insert(0,'<s>')
                 s.append('</s>')
+    print(sents)
 
 def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
     #TODO: Pass in word tag pairs bigram as word model
