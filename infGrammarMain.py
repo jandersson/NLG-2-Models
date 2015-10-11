@@ -6,7 +6,6 @@ from math import log
 import nltk
 
 def main():
-
     ##NGRAM MODEL FOR GRAMMAR
     sents_ = brown.tagged_sents(categories='news', tagset='universal')
     sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
@@ -20,8 +19,8 @@ def main():
     ##NGRAM MODEL FOR TAGS AND WORDS
     testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
 
-    ## HERE BE DEBUGGING
-    generateText(testModelGrammar, 1)
+    ## GENERATE TEXT
+    infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
@@ -68,49 +67,31 @@ def addPseudo(sents, n, tag=False):
                 s.append('</s>')
 
 def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
-    #TODO: Pass in word tag pairs bigram as word model
     """Generate a given number of sentences using a model for grammar and a (word,tag) model of equal N"""
-    cfd = nltk.ConditionalFreqDist(word_tag_model)
+    assert(grammar_model.getOrder() == word_tag_model.getOrder())
     #Create an empty list to hold our conditional tokens
     gram_prevTk = list()
+    word_prevTk = list()
     grammar_order = grammar_model.getOrder()
-
     for _ in range(nrSents): #Generate a sentence, nrSents times
         text = "" #Initialize empty string
         for _ in range(grammar_order-1): #Generate sentences on a given word/symbol (here it is the start symbol)
             gram_prevTk.append("<s>")
+            word_prevTk.append("START")
         gram_tk = "" #Initialize empty token string
+        word_tk = ""
         while(gram_tk != "</s>"): #Loop until we find an END token
-            text += gram_tk + " "
-            # print("Text: " + text) #debug
+            text += word_tk + " "
             gram_tk = grammar_model.generate(list(gram_prevTk))
-            # print("gram_tk: " + str(gram_tk)) #debug
-            print("gram_prevTk: " + str(gram_prevTk)) #debug
-            tag = gram_prevTk.pop(0)
-            # cfd[tag][tag]
+            wordgram = gram_tk.upper()
+            word_tk = word_tag_model.generate(list(word_prevTk))
+            gram_prevTk.pop(0)
+            word_prevTk.pop(0)
             gram_prevTk.append(gram_tk)
-            # tag = tag.upper()
-            # if tag != "<S>":
-            #     # print("Looking up tag: " + str(tag)) #debug
-            #     word_list = []
-            #     for (a,b) in word_model:
-            #         if a[1] == tag:
-            #             word_list.append(a[0])
-            #
-            #     fdist = nltk.FreqDist(word_list)
-            #     print(fdist.max())
-            #
-            #     word_preceders = [a[1] for (a,b) in word_model if b[1] == tag.upper()]
-            #     fdist = nltk.FreqDist(word_preceders)
-            #     most_common = fdist.most_common()
-            #     # most_common = [tag for (tag, _), in fdist.most_common()]
-            #     print("word preceders: " + str(most_common))
-            #
-            # gram_prevTk.append(gram_tk)
-            # gram_prevTk = list()
-            # noun_preceders =
-            # print(noun_preceders)
-            # word_tk = word_model.generate(gram_tk)
+            word_prevTk.append(wordgram)
+        print(text.strip())
+        gram_prevTk = list()
+        word_prevTk = list()
 
 
 

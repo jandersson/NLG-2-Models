@@ -15,7 +15,6 @@ class nGramModel():
         self.grams = list()
         for sent in samples:
             self.grams += list(nltk.ngrams(sent,n)) # get iterator over ngrams
-        
         self.countNgrams(self.grams, n, estimator) # sets self.model
 
 
