@@ -11,6 +11,12 @@ warnings.filterwarnings("ignore")
 class utils:
     @staticmethod
     def generateSentenceFromModel(model, smoothingName,count):
+        """
+        Prints out and generates a certain count of sentences from a given model
+        :param model: The nGram model
+        :param smoothingName: The name of the smoothing technique that was used to train the model
+        :param count: How many sentences should be printed out
+        """
         print("-----------------Starting sentence generations-----------------")
         print("GramCount:"+ str(model.n));
         print("Smoothing:"+ smoothingName);
@@ -19,6 +25,11 @@ class utils:
 
     @staticmethod
     def generateTrainAndTestSets(tCorpus):
+        """
+        Splits a given dataset into test and training sets
+        :param tCorpus: The corpus of tagged sentences
+        :return: traning and test sets
+        """
         split = 9*len(tCorpus)//10
         return tCorpus[:split], tCorpus[split:] #train, test
 
@@ -140,7 +151,7 @@ class nGramModel:
         for i in range(count):
             text = ""
             tk = ""
-            while(tk != "</s>"):
+            while tk != "</s>":
                 text += tk + " "
                 tk = self.generate(text.strip())
             print(text.strip().capitalize()+".")
@@ -153,6 +164,7 @@ class nGramModel:
         """
         print("Calculating entropy for a given testSet")
         p = 0
+        counter = 0;
         self.addPseudo(testSet,self.n)
         t = self.listToTuples(testSet)
         grams = nltk.ngrams(t,self.n)
@@ -160,10 +172,10 @@ class nGramModel:
             context =  tuple(gram)[:self.n-1]
             word =  tuple(gram)[self.n-1]
             prob = self.prob(word,context)
+            counter += 1
             if prob > 0:
-                test = -log(prob)
-            p += test
-        return p/len(t)
+                p += -log(prob)
+        return p/counter
 
     def perplexity(self, testSet):
         """
@@ -187,5 +199,5 @@ print(model7.perplexity(test))
 #generateSentenceFromModel(model1,"MLEProbDist",20)
 #generateSentenceFromModel(model3,"LaplaceProbDist",20)
 #generateSentenceFromModel(model4,"ELEProbDist",20)
-utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
+#utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
 
