@@ -14,16 +14,18 @@ def main():
     :return: None
     """
     order = 3
-    smoothing = SimpleGoodTuringProbDist
+    smoothing = ELEProbDist
 
     ##NGRAM MODEL FOR GRAMMAR
-    sents_ = brown.tagged_sents(tagset='universal')
+    sents_ = brown.tagged_sents()
     sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
+    sents = remove_punctuation(sents)
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sents:
         sentence_tags = [tag for (word, tag) in sentence if tag != '.']
         sentences_of_tags.append(sentence_tags)
+
 
     testModelGrammar = generateModelFromSentences(sentences_of_tags, smoothing, order) #Create trigram of only grammar
 
@@ -112,8 +114,7 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
             gram_tk = grammar_model.generate(list(gram_prevTk))
             wordgram = gram_tk.upper()
             word_tk = word_tag_model.generate(list(word_prevTk))
-            if word_tk == "</s>":
-                print("BANG")
+            while(word_tk == "</s>"):
                 word_tk = word_tag_model.generate(list(word_prevTk))
             gram_prevTk.pop(0)
             word_prevTk.pop(0)
