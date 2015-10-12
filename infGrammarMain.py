@@ -13,7 +13,7 @@ def main():
     Provide an entry point into program.
     :return: None
     """
-    order = 3
+    order = 2
     smoothing = ELEProbDist
 
     ##NGRAM MODEL FOR GRAMMAR
@@ -33,13 +33,15 @@ def main():
     testModelwordtags = generateModelFromSentences(sents, smoothing, order, True)
 
     ## GENERATE TEXT
-    infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
+    # infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
 
     ## HERE BE DEBUGGING
     #TODO: Implement function to split corpus sentences into training and test set.
-    # training_sents, test_sents = split(sents_, 0.9)
-    # print("Training Set Length: " + str(len(training_sents)))
-    # print("Test Set Length: " + str(len(test_sents)))
+    brown_sents_ = brown.sents()
+    brown_sents = list(brown_sents_)
+    word_model = generateModelFromSentences(brown_sents, smoothing, order)
+    infGrammarGenerate(testModelGrammar, testModelwordtags, word_model, 100)
+
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
@@ -94,7 +96,7 @@ def addPseudo(sents, n, tag=False):
                 s.insert(0,'<s>')
                 s.append('</s>')
 
-def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
+def infGrammarGenerate(grammar_model, word_tag_model, word_model, nrSents):
     """Generate a given number of sentences using a model for grammar and a (word,tag) model of equal N"""
     assert(grammar_model.getOrder() == word_tag_model.getOrder())
     #Create an empty list to hold our conditional tokens
@@ -109,7 +111,6 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
         gram_tk = "" #Initialize empty token string
         word_tk = ""
         while(gram_tk != "</s>"): #Loop until we find an END token
-
             text += word_tk + " "
             gram_tk = grammar_model.generate(list(gram_prevTk))
             wordgram = gram_tk.upper()
@@ -120,6 +121,17 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
             word_prevTk.pop(0)
             gram_prevTk.append(gram_tk)
             word_prevTk.append(wordgram)
+        check_text = text.lower()
+        # print([check_text.split()])
+        if len(text.split()) < grammar_order:
+            gram_prevTk = list()
+            word_prevTk = list()
+            continue
+        elif perplexity(word_model, [check_text.split()]) > 100:
+            gram_prevTk = list()
+            word_prevTk = list()
+            continue
+        print(perplexity(word_model, [check_text.split()]))
         print(text.strip())
         gram_prevTk = list()
         word_prevTk = list()
