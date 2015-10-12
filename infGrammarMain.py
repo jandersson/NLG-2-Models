@@ -13,18 +13,22 @@ def main():
     Provide an entry point into program.
     :return: None
     """
+    order = 3
+    smoothing = SimpleGoodTuringProbDist
+
     ##NGRAM MODEL FOR GRAMMAR
-    sents_ = brown.tagged_sents(categories='adventure', tagset='universal')
+    sents_ = brown.tagged_sents(tagset='universal')
     sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sents:
-        sentence_tags = [tag for (word, tag) in sentence]
+        sentence_tags = [tag for (word, tag) in sentence if tag != '.']
         sentences_of_tags.append(sentence_tags)
-    testModelGrammar = generateModelFromSentences(sentences_of_tags, SimpleGoodTuringProbDist, 3) #Create trigram of only grammar
+
+    testModelGrammar = generateModelFromSentences(sentences_of_tags, smoothing, order) #Create trigram of only grammar
 
     ##NGRAM MODEL FOR TAGS AND WORDS
-    testModelwordtags = generateModelFromSentences(sents, SimpleGoodTuringProbDist, 3, True)
+    testModelwordtags = generateModelFromSentences(sents, smoothing, order, True)
 
     ## GENERATE TEXT
     infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
