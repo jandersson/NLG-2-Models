@@ -3,24 +3,37 @@ from nltk.corpus import brown
 from nltk.probability import ELEProbDist
 from nltk.probability import SimpleGoodTuringProbDist
 from math import log
-import nltk
+import random
+
+
+
 
 def main():
+    """
+    Provide an entry point into program.
+    :return: None
+    """
     ##NGRAM MODEL FOR GRAMMAR
-    sents_ = brown.tagged_sents(categories='news', tagset='universal')
+    sents_ = brown.tagged_sents(categories='adventure', tagset='universal')
     sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sents:
         sentence_tags = [tag for (word, tag) in sentence]
         sentences_of_tags.append(sentence_tags)
-    testModelGrammar = generateModelFromSentences(sentences_of_tags, ELEProbDist, 3) #Create trigram of only grammar
+    testModelGrammar = generateModelFromSentences(sentences_of_tags, SimpleGoodTuringProbDist, 3) #Create trigram of only grammar
 
     ##NGRAM MODEL FOR TAGS AND WORDS
-    testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
+    testModelwordtags = generateModelFromSentences(sents, SimpleGoodTuringProbDist, 3, True)
 
     ## GENERATE TEXT
     infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
+
+    ## HERE BE DEBUGGING
+    #TODO: Implement function to split corpus sentences into training and test set.
+    training_sents, test_sents = split(sents_, 0.9)
+    print("Training Set Length: " + str(len(training_sents)))
+    print("Test Set Length: " + str(len(test_sents)))
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
@@ -37,6 +50,7 @@ def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
         return nGramModel(sents, smoothingF, n)
 
 def entropy(model, test):
+    """Calculate entropy given an ngram model and a list of test sentences."""
     p = 0
     n = 0
     for sent in test:
@@ -94,9 +108,27 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
         word_prevTk = list()
 
 
+def split(sentences, fraction):
+    """
+    Split a fraction of a list of sentences into a training and test set.
+    :param sentences: Initial training as a list of sentences data to be split
+    :param fraction: represents the fraction of sentences to place in a training data set, the remainder goes into test set
+    :return: list of training sentences, list of test sentences
+    """
+    split_sentences = list(sentences)
+    random.shuffle(split_sentences)
+    break_point = int(len(split_sentences) * fraction)
+    return split_sentences[:break_point], split_sentences[break_point:]
+
 
 
 def generateText(model, sents):
+    """
+    Generate sentences of text based on a single model.
+    :param model: NgramModel of words
+    :param sents: Integer, number of sentences to generate
+    :return: none
+    """
     prevTk = list()
     lN = model.getOrder()
     for _ in range(sents):
