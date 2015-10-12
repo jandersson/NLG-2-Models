@@ -23,7 +23,7 @@ def main():
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sents:
-        sentence_tags = [tag for (word, tag) in sentence if tag != '.']
+        sentence_tags = [tag for (word, tag) in sentence if word.isalnum()]
         sentences_of_tags.append(sentence_tags)
 
 
@@ -37,9 +37,9 @@ def main():
 
     ## HERE BE DEBUGGING
     #TODO: Implement function to split corpus sentences into training and test set.
-    training_sents, test_sents = split(sents_, 0.9)
-    print("Training Set Length: " + str(len(training_sents)))
-    print("Test Set Length: " + str(len(test_sents)))
+    # training_sents, test_sents = split(sents_, 0.9)
+    # print("Training Set Length: " + str(len(training_sents)))
+    # print("Test Set Length: " + str(len(test_sents)))
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
@@ -50,7 +50,7 @@ def remove_punctuation(sentences):
     sents = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sentences:
-        nopunc_sentence = [(word, tag) for (word, tag) in sentence if tag != '.']
+        nopunc_sentence = [(word, tag) for (word, tag) in sentence if word.isalnum()]
         sents.append(nopunc_sentence)
     return sents
 
