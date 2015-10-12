@@ -40,6 +40,14 @@ def main():
     assert(testModelwordtags.tagged == True)
     assert('START' in testModelwordtags.model)
 
+def remove_punctuation(sentences):
+    sents = []
+    #Pull out the tags and make sentences of just tags!
+    for sentence in sentences:
+        nopunc_sentence = [(word, tag) for (word, tag) in sentence if tag != '.']
+        sents.append(nopunc_sentence)
+    return sents
+
 def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
     if isTagged:
         addPseudo(sents, n, True)
@@ -95,10 +103,14 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
         gram_tk = "" #Initialize empty token string
         word_tk = ""
         while(gram_tk != "</s>"): #Loop until we find an END token
+
             text += word_tk + " "
             gram_tk = grammar_model.generate(list(gram_prevTk))
             wordgram = gram_tk.upper()
             word_tk = word_tag_model.generate(list(word_prevTk))
+            if word_tk == "</s>":
+                print("BANG")
+                word_tk = word_tag_model.generate(list(word_prevTk))
             gram_prevTk.pop(0)
             word_prevTk.pop(0)
             gram_prevTk.append(gram_tk)
