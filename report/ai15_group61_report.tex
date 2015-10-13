@@ -110,7 +110,7 @@ The first approach was to create a model that included both word and grammar inf
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
 
 The smoothing techniques chosen were:
-%\begin{itemize}
+\begin{itemize}
 \item Maximum Likelihood Estimate
 \item Laplace smoothing
 \item Expected Likelihood Estimate
