@@ -84,6 +84,7 @@ class nGramModel():
     def prob(self, word, previous):
         return self.model[previous].prob(word)
 
+
     def generate(self, words):
         order = self.order
         dictionary = self.model
@@ -107,6 +108,8 @@ class nGramModel():
     def getOrder(self):
         return self.order
 
+    def prob_tri(self, w1, w2, word):
+        return self.model[w1][w2].prob(word)
 
 def rec_dd():
     return collections.defaultdict(rec_dd)

@@ -4,28 +4,56 @@ from nltk.probability import ELEProbDist
 from nltk.probability import SimpleGoodTuringProbDist
 from math import log
 import nltk
+import random
+import ngramTrials2
 
 def main():
+    """
+    Provide an entry point into program.
+    :return: None
+    """
+    order = 3
+    smoothing = ELEProbDist
     ##NGRAM MODEL FOR GRAMMAR
-    sents_ = brown.tagged_sents(categories='news', tagset='universal')
+    sents_ = brown.tagged_sents()
     sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
+    sents = remove_punctuation(sents)
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
     for sentence in sents:
-        sentence_tags = [tag for (word, tag) in sentence]
+        sentence_tags = [tag for (word, tag) in sentence if word.isalnum()]
         sentences_of_tags.append(sentence_tags)
-    testModelGrammar = generateModelFromSentences(sentences_of_tags, ELEProbDist, 3) #Create trigram of only grammar
+
+
+    testModelGrammar = generateModelFromSentences(sentences_of_tags, smoothing, order) #Create trigram of only grammar
 
     ##NGRAM MODEL FOR TAGS AND WORDS
-    testModelwordtags = generateModelFromSentences(sents, ELEProbDist, 3, True)
+    testModelwordtags = generateModelFromSentences(sents, smoothing, order, True)
 
     ## GENERATE TEXT
-    infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
+    # infGrammarGenerate(testModelGrammar, testModelwordtags, 10)
+
+    ## HERE BE DEBUGGING
+    #TODO: Implement function to split corpus sentences into training and test set.
+    brown_sents_ = brown.sents()
+    brown_sents = list(brown_sents_)
+    word_model = ngramTrials2.nGramModel(brown_sents, smoothing, order)
+    infGrammarGenerate(testModelGrammar, testModelwordtags, word_model, 100)
+    #
+    # print(perplexity(word_model, test_sent))
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
     assert(testModelwordtags.tagged == True)
     assert('START' in testModelwordtags.model)
+
+def remove_punctuation(sentences):
+    sents = []
+    #Pull out the tags and make sentences of just tags!
+    for sentence in sentences:
+        nopunc_sentence = [(word, tag) for (word, tag) in sentence if word.isalnum()]
+        sents.append(nopunc_sentence)
+    return sents
 
 def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
     if isTagged:
@@ -37,14 +65,26 @@ def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
         return nGramModel(sents, smoothingF, n)
 
 def entropy(model, test):
+    """Calculate entropy given an ngram model and a list of test sentences."""
     p = 0
     n = 0
-    for sent in test:
-        n += len(sent)
-        wPrev = sent.pop(0)
-        for w in sent:
-            p += -log(model.prob(w,wPrev),2)
-    return p/n
+    if order == 2:
+        for sent in test:
+            n += len(sent)
+            wPrev = sent.pop(0)
+            for w in sent:
+                p += -log(model.prob(w,wPrev),2)
+        return p/n
+    elif order == 3:
+        for sent in test:
+            n += len(sent)
+            w1 = sent.pop(0)
+            w2 = sent.pop(0)
+            for w in sent:
+                p += -log(model.prob_tri(w1, w2, w))
+            return p/n
+
+
 
 def perplexity(model, test):
     e = entropy(model, test)
@@ -66,7 +106,7 @@ def addPseudo(sents, n, tag=False):
                 s.insert(0,'<s>')
                 s.append('</s>')
 
-def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
+def infGrammarGenerate(grammar_model, word_tag_model, word_model, nrSents):
     """Generate a given number of sentences using a model for grammar and a (word,tag) model of equal N"""
     assert(grammar_model.getOrder() == word_tag_model.getOrder())
     #Create an empty list to hold our conditional tokens
@@ -85,18 +125,48 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
             gram_tk = grammar_model.generate(list(gram_prevTk))
             wordgram = gram_tk.upper()
             word_tk = word_tag_model.generate(list(word_prevTk))
+            while(word_tk == "</s>"):
+                word_tk = word_tag_model.generate(list(word_prevTk))
             gram_prevTk.pop(0)
             word_prevTk.pop(0)
             gram_prevTk.append(gram_tk)
             word_prevTk.append(wordgram)
+        check_text = text.lower()
+        # print([check_text.split()])
+        if len(text.split()) < grammar_order:
+            gram_prevTk = list()
+            word_prevTk = list()
+            continue
+        elif perplexity(word_model, [check_text.split()]) > 100:
+            gram_prevTk = list()
+            word_prevTk = list()
+            continue
+        print(perplexity(word_model, [check_text.split()]))
         print(text.strip())
         gram_prevTk = list()
         word_prevTk = list()
 
 
+def split(sentences, fraction):
+    """
+    Split a fraction of a list of sentences into a training and test set.
+    :param sentences: Initial training as a list of sentences data to be split
+    :param fraction: represents the fraction of sentences to place in a training data set, the remainder goes into test set
+    :return: list of training sentences, list of test sentences
+    """
+    split_sentences = list(sentences)
+    random.shuffle(split_sentences)
+    break_point = int(len(split_sentences) * fraction)
+    return split_sentences[:break_point], split_sentences[break_point:]
 
 
 def generateText(model, sents):
+    """
+    Generate sentences of text based on a single model.
+    :param model: NgramModel of words
+    :param sents: Integer, number of sentences to generate
+    :return: none
+    """
     prevTk = list()
     lN = model.getOrder()
     for _ in range(sents):
