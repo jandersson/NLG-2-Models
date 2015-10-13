@@ -50,9 +50,9 @@ class utils:
         return  sorted #Sorts the list in ascending order
 
     @staticmethod
-    def generateSentencesWithPerplexityThreshold(M, count):
+    def generateSentencesWithPerplexity(M, count):
         ListOfSents = []
-        while len(ListOfSents) < 200:
+        while len(ListOfSents) < 100:
             taggedSent, sent = M.createSentenceWithTags()
             perplexity = M.perplexity(taggedSent)
             if 3 < len(sent.split(" ")) < 11:
@@ -176,19 +176,6 @@ class nGramModel:
             except:
                 return "</s>"
 
-    def createSentences(self,count = 1):
-        """
-        Creates sentences
-        :param count: The number of sentences to generate
-        """
-        for i in range(count):
-            text = ""
-            tk = ""
-            while tk != "</s>":
-                text += tk + " "
-                tk = self.generate(text.strip())
-        return text.strip().capitalize()
-
     def createSentenceWithTags(self):
         """
         Creates sentences and return them with tags
@@ -251,12 +238,10 @@ TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
 gramCount = 3
 testSent = TaggedSent
 train, test = utils.generateTrainAndTestSets(TaggedSent,0.7);
-Mo = nGramModel(train, probability.MLEProbDist, gramCount)
+Mo = nGramModel(train, probability.LaplaceProbDist, gramCount)
 #print(utils.bestSentencesByPerplexity(model,test,10))
-genSentences = utils.generateSentencesWithPerplexityThreshold(Mo,10)
-utils.createSentenceFile(genSentences,"MLEProbDist","MLEProbDist.txt")
-
-
+genSentences = utils.generateSentencesWithPerplexity(Mo,10)
+utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
 
 
 #utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
@@ -266,11 +251,6 @@ utils.createSentenceFile(genSentences,"MLEProbDist","MLEProbDist.txt")
 #utils.generateSentenceFromModel(model,"LaplaceProbDist",20)
 #generateSentenceFromModel(model4,"ELEProbDist",20)
 #utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
-
-
-
-
-
 
 
 '''
