@@ -1,0 +1,10 @@
+SmoothOperator	ELEProbDist	Deans can form an analysis	1584.13
+SmoothOperator	ELEProbDist	Superintendents at dog shows state opera	2086.46
+SmoothOperator	ELEProbDist	He avidly reads the wall ahead	2325.98
+SmoothOperator	ELEProbDist	Tulips with petals wide	2337.95
+SmoothOperator	ELEProbDist	Tradition has assigned negro children	2342.98
+SmoothOperator	ELEProbDist	Also although only a portion of adolescence	2771.09
+SmoothOperator	ELEProbDist	The promenade for example there	2832.20
+SmoothOperator	ELEProbDist	Developments up to underwrite municipal services are of unusual interest	2892.94
+SmoothOperator	ELEProbDist	Selected bibliographies and critical values in table	3030.19
+SmoothOperator	ELEProbDist	Commonly used electronic devices	3110.62
