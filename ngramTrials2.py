@@ -25,6 +25,17 @@ class utils:
         print("-----------------Ending sentence generations-----------------")
 
     @staticmethod
+    def IsSentenceInBrownCorpus(iSent):
+        iSent = iSent.lower()
+        sent = set([w.lower() for w in iSent.split()])
+        for i, s in enumerate(brown_sets):
+            if sent.issubset(s):
+                brown_sent = " ".join(brown.sents()[i]).lower()
+                if iSent in brown_sent:
+                    return True
+        return False
+
+    @staticmethod
     def createSentenceFile(sents, smoothingName,fileName):
         for sent in sents:
             f = open(fileName,'a')
@@ -55,9 +66,10 @@ class utils:
         while len(ListOfSents) < 100:
             taggedSent, sent = M.createSentenceWithTags()
             perplexity = M.perplexity(taggedSent)
-            if 3 < len(sent.split(" ")) < 11:
-                print("Adding sentence nr: " + str(len(ListOfSents)))
-                ListOfSents.append((sent,perplexity))
+            if not utils.IsSentenceInBrownCorpus(sent):
+                if 5 < len(sent.split(" ")) < 14:
+                    print("Adding sentence nr: " + str(len(ListOfSents)))
+                    ListOfSents.append((sent,perplexity))
         return sorted(ListOfSents,key=lambda x: x[1])[:count] #Sorts the list in descending order
 
 
@@ -87,13 +99,12 @@ class nGramModel:
         if n > 2: #triGrams
             self.addPseudo(TaggedSentences,1)
             tagged_trigram_tuples = self.listToTuples(TaggedSentences)
-            triGrams = nltk.ngrams(tagged_trigram_tuples,3)
+            triGrams = nltk.trigrams(tagged_trigram_tuples)
             cfdTriGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3) in list(triGrams):
                 cfdTriGrams[(gram1,gram2)][gram3] +=1
             self.models.append(ConditionalProbDist(cfdTriGrams, smoothing,len(cfdTriGrams)))
             self.model = self.models[1]
-
         if n > 3: #quadGrams
             self.addPseudo(TaggedSentences,1)
             TaggedTuples = self.listToTuples(TaggedSentences)
@@ -233,24 +244,18 @@ class nGramModel:
         e = self.entropyOfSentence(sentence)
         return 2**e
 
+print("loading the corpus!")
 tagSet = "universal"
+brown_sets = [set([i.lower() for i in s]) for s in brown.sents()]
 TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
 gramCount = 3
 testSent = TaggedSent
 train, test = utils.generateTrainAndTestSets(TaggedSent,0.7);
-Mo = nGramModel(train, probability.LaplaceProbDist, gramCount)
+Mo = nGramModel(train, probability.SimpleGoodTuringProbDist, gramCount)
 #print(utils.bestSentencesByPerplexity(model,test,10))
 genSentences = utils.generateSentencesWithPerplexity(Mo,10)
-utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
+utils.createSentenceFile(genSentences,"SimpleGoodTuringProbDist","SimpleGoodTuringProbDist.txt")
 
-
-#utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
-#model.entropyOfSentence()
-#print(model7.perplexity(test))
-#generateSentenceFromModel(model1,"MLEProbDist",20)
-#utils.generateSentenceFromModel(model,"LaplaceProbDist",20)
-#generateSentenceFromModel(model4,"ELEProbDist",20)
-#utils.generateSentenceFromModel(model7,"SimpleGoodTuringProbDist",20)
 
 
 '''
