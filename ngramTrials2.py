@@ -2,9 +2,8 @@ import nltk
 from nltk.corpus import brown
 from nltk.probability import ConditionalFreqDist
 from nltk.probability import ConditionalProbDist
-from  nltk import probability
+from nltk import probability
 from math import log
-import os
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -47,18 +46,20 @@ class utils:
         ListOfSents = []
         for sent in testSet:
             ListOfSents.append((sent,M.entropyOfSentence(sent)))
-        return sorted(ListOfSents,key=lambda x:(-x[1],x[0]))[count:] #Sorts the list in descending order
+        sorted = sorted(ListOfSents,key=lambda x: x[1])
+        return  sorted #Sorts the list in ascending order
 
     @staticmethod
-    def generateSentencesWithPerplexityThreshold(M, count, threshold):
+    def generateSentencesWithPerplexityThreshold(M, count):
         ListOfSents = []
-        while len(ListOfSents) != count:
+        while len(ListOfSents) < 200:
             taggedSent, sent = M.createSentenceWithTags()
             perplexity = M.perplexity(taggedSent)
-            print(perplexity)
-            if perplexity < threshold:
+            if 3 < len(sent.split(" ")) < 11:
+                print("Adding sentence nr: " + str(len(ListOfSents)))
                 ListOfSents.append((sent,perplexity))
-        return ListOfSents
+        return sorted(ListOfSents,key=lambda x: x[1])[:count] #Sorts the list in descending order
+
 
 class nGramModel:
 
@@ -75,13 +76,12 @@ class nGramModel:
         if n > 1: ##bigrams
 
             self.addPseudo(TaggedSentences,1)
-            TaggedTuples = (item for sublist in TaggedSentences for item in sublist)
-            TaggedTuples = [(t1.lower(), t2) for t1, t2 in TaggedTuples if (t1.isalpha() or t1 in("<s>","</s>"))]
-            biGrams = nltk.ngrams(TaggedTuples,2)
+            tagged_bigram_tuples = self.listToTuples(TaggedSentences)
+            biGrams = nltk.ngrams(tagged_bigram_tuples,2)
             cfdBiGrams = ConditionalFreqDist()
             for (gram1,gram2) in list(biGrams):
                 cfdBiGrams[gram1][gram2] +=1
-            self.models.append(ConditionalProbDist(cfdBiGrams, smoothing))
+            self.models.append(ConditionalProbDist(cfdBiGrams, smoothing,len(cfdBiGrams)))
             self.model = self.models[0]
 
         if n > 2: #triGrams
@@ -91,7 +91,7 @@ class nGramModel:
             cfdTriGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3) in list(triGrams):
                 cfdTriGrams[(gram1,gram2)][gram3] +=1
-            self.models.append(ConditionalProbDist(cfdTriGrams, smoothing))
+            self.models.append(ConditionalProbDist(cfdTriGrams, smoothing,len(cfdTriGrams)))
             self.model = self.models[1]
 
         if n > 3: #quadGrams
@@ -101,9 +101,10 @@ class nGramModel:
             cfdQuadGrams = ConditionalFreqDist()
             for (gram1,gram2,gram3,gram4) in list(quadGrams):
                 cfdQuadGrams[(gram1,gram2,gram3)][gram4] +=1
-            self.models.append(ConditionalProbDist(cfdQuadGrams, smoothing))
+            self.models.append(ConditionalProbDist(cfdQuadGrams, smoothing,len(cfdQuadGrams)))
             self.model = self.models[2]
         print("Done training the model, moving onto more important things!")
+
 
     def addPseudo(self, TaggedSentences,count):
         """
@@ -161,7 +162,7 @@ class nGramModel:
         if curNGram == 1:
             return ("</s>","</s>")
         tokenized = nltk.word_tokenize(context.lower())
-        tagged = nltk.pos_tag(tokenized, tagset='universal')
+        tagged = nltk.pos_tag(tokenized, tagset=tagSet)
         if len(tagged) < curNGram:
             for i in range(curNGram -len(tagged)):
                 tagged.insert(0, ("<s>","<s>"))
@@ -186,7 +187,7 @@ class nGramModel:
             while tk != "</s>":
                 text += tk + " "
                 tk = self.generate(text.strip())
-        return text.strip().capitalize()+"."
+        return text.strip().capitalize()
 
     def createSentenceWithTags(self):
         """
@@ -199,7 +200,7 @@ class nGramModel:
             text += tk + " "
             tagged,tk = self.generate(text.strip(),True)
             taggedSent.append(tagged)
-        return taggedSent, text.strip().capitalize()+"."
+        return taggedSent, text.strip().capitalize()
 
     def entropyOfSentence(self, sentence):
         p = 0
@@ -245,20 +246,21 @@ class nGramModel:
         e = self.entropyOfSentence(sentence)
         return 2**e
 
-TaggedSent = [w for w in brown.tagged_sents(tagset='universal')[:1000]]
+tagSet = "universal"
+TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
 gramCount = 3
 testSent = TaggedSent
 train, test = utils.generateTrainAndTestSets(TaggedSent,0.7);
-#model1 = nGramModel(TaggedCorpus, probability.MLEProbDist, gramCount)
-#model3 = nGramModel(TaggedCorpus, probability.LaplaceProbDist, gramCount)
-#model4 = nGramModel(TaggedCorpus, probability.ELEProbDist, gramCount)
-model = nGramModel(train, probability.LaplaceProbDistELEProbDist, gramCount)
+Mo = nGramModel(train, probability.MLEProbDist, gramCount)
 #print(utils.bestSentencesByPerplexity(model,test,10))
-genSentences = utils.generateSentencesWithPerplexityThreshold(model,10,1.2)
-utils.createSentenceFile(genSentences,"LaplaceProbDist","MLEProbDist.txt")
+genSentences = utils.generateSentencesWithPerplexityThreshold(Mo,10)
+utils.createSentenceFile(genSentences,"MLEProbDist","MLEProbDist.txt")
+
+
+
+
+#utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
 #model.entropyOfSentence()
-
-
 #print(model7.perplexity(test))
 #generateSentenceFromModel(model1,"MLEProbDist",20)
 #utils.generateSentenceFromModel(model,"LaplaceProbDist",20)
