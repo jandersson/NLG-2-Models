@@ -8,6 +8,7 @@
 \graphicspath{{pictures/}}
 
 \title{Sentence Generation using Two Models \\ \large{Final Project in the course DD2380 at KTH}}
+
 \author{\hspace*{-0.5cm}
 Group 61\\
 \begin{tabular}{cccc}
@@ -18,7 +19,8 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \includegraphics[width=0.13\linewidth]{photo_Jokull} & 
 \includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
 \includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
-\end{tabular}}
+\end{tabular}
+}
 % Normally there will not be any pictures but we want
 % these so that we can connect faces to names in the course
 % We also want birthdates so that we can tell people with the same
@@ -103,17 +105,20 @@ Should contain the following: When, where, and how was the study done? What mate
 
 
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
+
+**Here we should talk about different N's we used in the model and how that affected the sentences that were generated.**
+
 \subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
 
 The distribution table contains the n-1-gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
 
-To be able to use fallback each model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
+To be able to use fallback the tri-gram model also had a bi-gram model. If a word/tag was not found using the tr-gram model we would fallback to the bi-gram model.
 
-To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
+To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols would correspond to n-1, meaning that 2 start symbols were added to the start and end of sentence in a tri-gram model.
 
 \subsubsection{Sentence generation}
-Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model.
+Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to the bigram model and look for the word in that model.
 
 \subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
