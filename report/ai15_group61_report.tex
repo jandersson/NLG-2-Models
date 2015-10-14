@@ -4,6 +4,10 @@
 \usepackage{epsfig}
 \usepackage{graphics}
 \usepackage{fancyhdr}
+%\usepackage{subcaption}
+\usepackage{subfig}
+
+
 
 \graphicspath{{pictures/}}
 
@@ -14,9 +18,9 @@ Group 61\\
 K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 Agust 20 & January 12 & BIRTHDATE3 & February 10 \\
 hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
-\includegraphics[width=0.13\linewidth]{photo_Kristofer} &
-\includegraphics[width=0.13\linewidth]{photo_Jokull} &
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} &
+\includegraphics[width=0.13\linewidth]{photo_Kristofer} & 
+\includegraphics[width=0.13\linewidth]{photo_Jokull} & 
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
 \includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
 \end{tabular}}
 % Normally there will not be any pictures but we want
@@ -38,7 +42,7 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test.
+We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test. 
 
 Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
 \end{abstract}
@@ -71,7 +75,7 @@ Our results show that using different smoothing algorithms can change the result
 \label{sec:intro}
 
 Language models are a staple in many domains including speech recognition, optical character
-recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
 
 In the following sections we will describe the difference in the models generated and how including grammar affects
 
@@ -167,16 +171,44 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \section{Experimental results}
 \label{sec:exps}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t!]%
+    \centering
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/boxplot_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/boxplot_resultsByModelAndSmoothing} }}%
+    \qquad
+    \caption{Model performances compared with respect to smoothing methods. Diamond represents means.}%
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/histogram_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/histogram_resultsByModelAndSmootingMethod} }}%
+    \caption{Model performances compared with respect to smoothing methods. Dotted lines represent means.}%
+    \label{fig:example}%
+\end{figure}
+
+%\begin{figure}[b!]%
+%    \centering
+%    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/histogram_resultsByModel} }}%
+%    \qquad
+%    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/histogram_resultsByModelAndSmootingMethod} }}%
+%    \caption{Model performances compared with respect to smoothing methods.}%
+%    \label{fig:boxplots}%
+%\end{figure}
+
+
+
+
+
+
+
+
+
 
 \subsection{Experimental setup}
 Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
 
 \subsection{Experiment ...}
 
-Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one.
+Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one. 
 
 \begin{figure}
 \centering
@@ -212,7 +244,7 @@ What answer was found to the research question; what did the study find? Was the
 
 
 
-We list up the problem we ran into and what we could have done different.
+We list up the problem we ran into and what we could have done different. 
 
 
 
