@@ -14,11 +14,11 @@ Group 61\\
 K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 Agust 20 & January 12 & BIRTHDATE3 & February 10 \\
 hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
-\includegraphics[width=0.13\linewidth]{photo_Kristofer} & 
-\includegraphics[width=0.13\linewidth]{photo_Jokull} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
+\includegraphics[width=0.13\linewidth]{photo_Kristofer} &
+\includegraphics[width=0.13\linewidth]{photo_Jokull} &
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} &
 \includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
-\end{tabular}} 
+\end{tabular}}
 % Normally there will not be any pictures but we want
 % these so that we can connect faces to names in the course
 % We also want birthdates so that we can tell people with the same
@@ -37,9 +37,9 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test. 
+We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test.
 
-Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated. 
+Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
 \end{abstract}
 
 
@@ -70,10 +70,10 @@ Our results show that using different smoothing algorithms can change the result
 \label{sec:intro}
 
 Language models are a staple in many domains including speech recognition, optical character
-recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.
 
 In the following sections we will describe the difference in the models generated and how including grammar affects
- 
+
 
 **
 Why was the study undertaken? What was the research question, the tested hypothesis or the purpose of the research?
@@ -88,11 +88,12 @@ This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Sect
 \section{Related work}
 \label{sec:relwork}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla \cite{RussellNorvigAIBook3rd}
-bla bla bla bla bla bla
+In general, according to \cite{Reiter:2000:BNL:331955}, NLG systems are constructed after performing requirements analysis whereby the goals of the NLG system are defined. Varied requirements have produced several different NLG systems over the years. Indeed, the project team designed the two NLG approaches after performing such a requirements analysis. Again \cite{Reiter:2000:BNL:331955} explains that one approach to generating text is not through NLG, rather by a technique known as mail-merge whereby a template is created and the appropriate data is filled in. In designing the experiment for the "Inferred Grammar" model, an approach similar to mail-merge was carried out.
+
+In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored.
+
+Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +105,7 @@ Should contain the following: When, where, and how was the study done? What mate
 
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
 \subsection{Built in grammar model}
-The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB)) 
+The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
 
 The distribution table contains the n-1-Gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
 
@@ -113,7 +114,7 @@ To be able to use fallback each model had 2-grams up to n-grams models. If a wor
 To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
 
 \subsubsection{Sentence generation}
-Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model. 
+Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model.
 
 \subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
@@ -143,7 +144,7 @@ Here we will write clever stuff about this smoothing technique
 \subsection{Implementation}
 \label{sec:impl}
 
-We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included 
+We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
 \begin{itemize}
 \item Brown corpus
 \item Treebank Part of Speech Tagger (Maximum entropy)
@@ -157,38 +158,38 @@ We split into pairs with each pair implementing their model. We decided to go wi
 
 
 
-  
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Experimental results}
 \label{sec:exps}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 
 \subsection{Experimental setup}
 Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
 
 \subsection{Experiment ...}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\linewidth]{histogram}
-\caption{A description that makes browsing the paper easy and clearly 
-describes what is in the picture. Make sure that the text in the figure 
+\caption{A description that makes browsing the paper easy and clearly
+describes what is in the picture. Make sure that the text in the figure
 is large enough to read and that the axes are labelled.}
 \label{fig:histogram}
 \end{figure}
 
-Bla bla bla bla bla Figure~\ref{fig:histogram} bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+Bla bla bla bla bla Figure~\ref{fig:histogram} bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 
 \begin{table}
 \begin{center}
@@ -198,7 +199,7 @@ Bla bla & Bla bla & Bla bla \\ \hline
 42 & 42 & 42 \\ \hline
 42 & 42 & 42 \\ \hline
 \end{tabular}
-\caption{A description that makes browsing the paper easy and clearly 
+\caption{A description that makes browsing the paper easy and clearly
 describes what is in the table.}
 \label{tab:results}
 \end{center}
@@ -206,28 +207,29 @@ describes what is in the table.}
 
 What answer was found to the research question; what did the study find? Was the tested hypothesis true?
 
+Bla bla bla bla bla Table~\ref{tab:results} bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\section{Future Work}
+\label{sec:future}
+>>>>>>> Stashed changes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Summary and Conclusions}
 \label{sec:summary}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-
+Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
 \label{sec:contributions}
-We the members of project group 61 unanimously declare that 
+We the members of project group 61 unanimously declare that
 we have all equally contributed toward the completion of this
-project.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{plain}
 \bibliography{reflist}
-
-
 \end{document}

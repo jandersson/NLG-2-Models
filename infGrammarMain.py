@@ -1,13 +1,17 @@
 from infGrammarNgram import nGramModel
 from nltk.corpus import brown
+
+# Smoothing Techniques
 from nltk.probability import ELEProbDist
 from nltk.probability import SimpleGoodTuringProbDist
+from nltk.probability import LaplaceProbDist
+from nltk.probability import MLEProbDist
+
 from math import log
-import nltk
 import random
 import ngramTrials2
 
-smoothing_string = "ELEProbDist"
+smoothing_string = "SimpleGoodTuringProbDist"
 
 def main():
     """
@@ -15,10 +19,11 @@ def main():
     :return: None
     """
     order = 3
-    smoothing = ELEProbDist
+    smoothing = SimpleGoodTuringProbDist
+
     ##NGRAM MODEL FOR GRAMMAR
-    sents_ = brown.tagged_sents()
-    sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
+    tagged_sents_ = brown.tagged_sents()
+    sents = list(tagged_sents_) #needs to be mutable to insert start/end tokens if working with tags
     sents = remove_punctuation(sents)
     sentences_of_tags = []
     #Pull out the tags and make sentences of just tags!
@@ -27,7 +32,6 @@ def main():
         sentences_of_tags.append(sentence_tags)
 
     testModelGrammar = generateModelFromSentences(sentences_of_tags, smoothing, order) #Create trigram of only grammar
-    ##NGRAM MODEL FOR TAGS AND WORDS
     testModelwordtags = generateModelFromSentences(sents, smoothing, order, True)
 
     ## GENERATE TEXT
@@ -40,12 +44,8 @@ def main():
     word_model = ngramTrials2.nGramModel(brown_sents, smoothing, order)
     infGrammarGenerate(testModelGrammar, testModelwordtags, word_model, 1000)
 
-
-    #Testing out other model
-    # ngramTrials2.nGramModel(sents_,smoothing,order)
-
-    #
-    # print(perplexity(word_model, test_sent))
+    baseline_model = generateModelFromSentences(brown.sents(), LaplaceProbDist, 2)
+    generateText(baseline_model, 10)
 
     ## TESTS
     assert(testModelGrammar.tagged == False)
@@ -71,7 +71,6 @@ def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
 
 def entropy(model, test):
     """Calculate entropy given an ngram model and a list of test sentences."""
-
     p = 0
     n = 0
     order = model.getOrder()
@@ -90,7 +89,6 @@ def entropy(model, test):
             for w in sent:
                 p += -log(model.prob_tri(w1, w2, w))
             return p/n
-
 
 
 def perplexity(model, test):
@@ -126,11 +124,11 @@ def infGrammarGenerate(grammar_model, word_tag_model, word_model, nrSents):
     for _ in range(nrSents): #Generate a sentence, nrSents times
         text = "" #Initialize empty string
         for _ in range(order-1): #Generate sentences on a given word/symbol (here it is the start symbol)
-            gram_prevTk.append("<s>")
-            word_prevTk.append("START")
+            gram_prevTk.append("START")
+            word_prevTk.append("<s>")
         gram_tk = "" #Initialize empty token string
         word_tk = ""
-        while(gram_tk != "</s>"): #Loop until we find an END token
+        while(gram_tk != "END"): #Loop until we find an END token
             text += word_tk + " "
             tagged_sentence.append((word_tk, gram_tk))
             gram_tk = grammar_model.generate(list(gram_prevTk))
@@ -144,18 +142,12 @@ def infGrammarGenerate(grammar_model, word_tag_model, word_model, nrSents):
             word_prevTk.append(wordgram)
         gram_prevTk = list()
         word_prevTk = list()
-        counter += 1
-        print(counter)
         if not validate_sentence(text, order):
             continue
         perplexity = word_model.perplexity(tagged_sentence)
-        if perplexity < best_sentence[1]:
-            best_sentence = (text.strip(), perplexity)
-            write_to_file(best_sentence, smoothing_string)
-            print(text.strip())
-            # print(text.strip())
-        gram_prevTk = list()
-        word_prevTk = list()
+        sentence = (text.strip(), perplexity)
+        write_to_file(sentence, smoothing_string)
+        print(text.strip())
 
 
 
@@ -192,10 +184,13 @@ def validate_sentence(sentence, order):
     maximum_phrase_length = 13
     minimum_phrase_length = 6
 
-    if
+    if findSent(sentence):
+        return False
+
     if (sent_length >= maximum_phrase_length) or (order >= sent_length) or (sent_length <= minimum_phrase_length):
         print("Rejected sentence: ")
         return False
+
     else:
         return True
 
@@ -222,6 +217,24 @@ def generateText(model, sents):
 
         print(text.strip())
         prevTk = list()
+
+brown_sents = [set([i.lower() for i in s]) for s in brown.sents()]
+
+def findSent(iSent):
+    """
+    Check if a given sentence is in the brown corpus
+    :param iSent:
+    :return:
+    """
+    iSent = iSent.lower()
+    sent = set([w.lower() for w in iSent.split()])
+    for i, s in enumerate(brown_sents):
+        if sent.issubset(s):
+            brown_sent = " ".join(brown.sents()[i]).lower()
+            if iSent in brown_sent:
+                return True
+    return False
+
 
 if __name__ == '__main__':
     main()
