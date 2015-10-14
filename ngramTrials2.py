@@ -63,7 +63,7 @@ class utils:
     @staticmethod
     def generateSentencesWithPerplexity(M, count):
         ListOfSents = []
-        while len(ListOfSents) < 100:
+        while len(ListOfSents) < 10:
             taggedSent, sent = M.createSentenceWithTags()
             perplexity = M.perplexity(taggedSent)
             if not utils.IsSentenceInBrownCorpus(sent):
@@ -180,6 +180,7 @@ class nGramModel:
         tagged = tagged[-(curNGram - 1):]
         grams =  list(nltk.ngrams(tagged, curNGram-1))[0][0] if curNGram == 2  else list(nltk.ngrams(tagged, curNGram-1))[0]
         try:
+            print(grams)
             return self.models[curNGram-2][grams].generate()
         except:
             try:
@@ -198,6 +199,7 @@ class nGramModel:
             text += tk + " "
             tagged,tk = self.generate(text.strip(),True)
             taggedSent.append(tagged)
+        print(text.strip())
         return taggedSent, text.strip().capitalize()
 
     def entropyOfSentence(self, sentence):
@@ -251,10 +253,10 @@ TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
 gramCount = 3
 testSent = TaggedSent
 train, test = utils.generateTrainAndTestSets(TaggedSent,0.7);
-Mo = nGramModel(train, probability.SimpleGoodTuringProbDist, gramCount)
+Mo = nGramModel(train, probability.LaplaceProbDist, gramCount)
 #print(utils.bestSentencesByPerplexity(model,test,10))
 genSentences = utils.generateSentencesWithPerplexity(Mo,10)
-utils.createSentenceFile(genSentences,"SimpleGoodTuringProbDist","SimpleGoodTuringProbDist.txt")
+utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
 
 
 

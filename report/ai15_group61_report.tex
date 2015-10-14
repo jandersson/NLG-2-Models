@@ -37,10 +37,9 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test. 
+
+Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated. 
 \end{abstract}
 
 
@@ -70,22 +69,19 @@ bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 \section{Introduction (1--2 pages)}
 \label{sec:intro}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+Language models are a staple in many domains including speech recognition, optical character
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
 
-\subsection{Contribution}
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+In the following sections we will describe the difference in the models generated and how including grammar affects
+ 
 
-\subsection{Outline}
-Bla bla bla bla bla bla bla Section~\ref{sec:relwork} bla bla bla bla 
-bla bla bla bla bla Section~\ref{sec:method} bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla Section~\ref{sec:exps}
-bla bla bla bla bla bla Section~\ref{sec:summary} bla bla bla bla bla
+**
+Why was the study undertaken? What was the research question, the tested hypothesis or the purpose of the research?
+**
+
+
+\section{Outline}
+This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Section~\ref{sec:relwork} we list out how this project relates to other projects and what we did use from those projects.In Section~\ref{sec:method} we go into details about the implementation of the two models and list up which techniques we used. In Section~\ref{sec:exps} we explain how experiment were done the results.In Section~\ref{sec:summary} we summarize the most important results of this work.Finally in Section~\ref{sec:contributions} we list up the contribution of each team member to the project.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,12 +99,26 @@ bla bla bla bla bla bla
 \section{Our method}
 \label{sec:method}
 
-The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
+Should contain the following: When, where, and how was the study done? What materials were used or who was included in the study groups (patients, etc.)?
 
+
+The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
+\subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB)) 
 
+The distribution table contains the n-1-Gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
+
+To be able to use fallback each model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
+
+To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
+
+\subsubsection{Sentence generation}
+Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model. 
+
+\subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
 
+\subsection{Smoothing}
 The smoothing techniques chosen were:
 \begin{itemize}
 \item Maximum Likelihood Estimate
@@ -116,6 +126,19 @@ The smoothing techniques chosen were:
 \item Expected Likelihood Estimate
 \item Simplified Good-Turing Frequency Estimation
 \end{itemize}
+
+\subsubsection{Maximum Likelihood Estimate}
+Here we will write clever stuff about this smoothing technique
+
+\subsubsection{Laplace smoothing}
+Here we will write clever stuff about this smoothing technique
+
+\subsubsection{Expected Likelihood Estimate}
+Here we will write clever stuff about this smoothing technique
+
+\subsubsection{Simplified Good-Turing Frequency Estimation}
+Here we will write clever stuff about this smoothing technique
+
 
 \subsection{Implementation}
 \label{sec:impl}
@@ -129,6 +152,8 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \item Conditional Frequency Distribution and Conditional Probability Distribution classes
 \item classes for each of the above mentioned smoothing techniques
 \end{itemize}
+
+
 
 
 
@@ -179,9 +204,7 @@ describes what is in the table.}
 \end{center}
 \end{table}
 
-Bla bla bla bla bla Table~\ref{tab:results} bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+What answer was found to the research question; what did the study find? Was the tested hypothesis true?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
