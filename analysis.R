@@ -32,7 +32,7 @@ resultsForPerfectAndBaseline <- filter(results, Model == "Perfect" | Model == "R
 
 results$SmoothingMethod <- factor(results$SmoothingMethod, 
                                   levels = c("Random", "MLEProbDist", "LaplaceProbDist", "ELEProbDist", "SimpleGoodTuringProbDist", "Perfect"),
-                                  labels = c("Random", "MLE", "Laplace", "ELE", "Simple Good Turing", "Perfect"),
+                                  labels = c("Random", "MLE", "Laplace", "ELE", "Good Turing", "Perfect"),
                                   ordered = TRUE)
 results$Model <- factor(results$Model, 
                                   levels = c("Perfect", "SmoothOperator", "InferredGrammar", "Random"),
@@ -42,7 +42,7 @@ results$Model <- factor(results$Model,
 
 resultsForModels$SmoothingMethod <- factor(resultsForModels$SmoothingMethod, 
                                   levels = c("MLEProbDist", "LaplaceProbDist", "ELEProbDist", "SimpleGoodTuringProbDist"),
-                                  labels = c("MLE", "Laplace", "ELE", "Simple Good Turing"),
+                                  labels = c("MLE", "Laplace", "ELE", "Good Turing"),
                                   ordered = TRUE)
 resultsForModels$Model <- factor(resultsForModels$Model, 
                         levels = c("SmoothOperator", "InferredGrammar"),
@@ -106,7 +106,7 @@ ggplot(results, aes(x=value)) +
   geom_vline(data=meansByModel, aes(xintercept=means), linetype="dashed", size=1, colour="black") +
   xlab("Score") +
   ggtitle("Results by model") +
-  theme_bw(base_family = "Roboto Regular")
+  theme_bw(base_family = "Roboto Regular", base_size = 16)
   
 dev.off()
 
@@ -126,7 +126,7 @@ ggplot(results, aes(x=Model, y=value)) +
   xlab("Model") + 
   ylab("Score") +
   ggtitle("Results by model") +
-  theme_bw(base_family = "Roboto Regular")
+  theme_bw(base_family = "Roboto Regular", base_size = 16)
 
 dev.off()
 
@@ -146,26 +146,25 @@ ggplot(resultsForModels, aes(x=SmoothingMethod, y=value)) +
   xlab("Smoothing Method") +
   ylab("Score") +
   ggtitle("Results by model and smoothing method")+
-  theme_bw(base_family = "Roboto Regular")
-
+  theme_bw(base_family = "Roboto Regular", base_size = 14)
 dev.off()
 
 
 png(filename=paste(resultsFolder, "boxplot_resultsForPerfectAndRandom.png", sep=""), 
     type="cairo",
     units="px", 
-    width=600, 
+    width=400, 
     height=600, 
     pointsize=12, 
     res=96)
 
 ggplot(resultsForPerfectAndBaseline, aes(x=Model, y=value)) +
-  facet_wrap(~Model) +
+  #facet_wrap(~Model) +
   geom_boxplot() +
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
   xlab("Smoothing Method") +
   ylab("Score") +
-  ggtitle("Results by model and smoothing method") +
+  #ggtitle("Results for...") +
   theme_bw(base_family = "Roboto Regular")
 
 dev.off()
