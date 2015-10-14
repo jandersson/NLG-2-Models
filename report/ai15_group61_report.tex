@@ -15,12 +15,11 @@ Group 61\\
 K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 Agust 20 & January 12 & BIRTHDATE3 & February 10 \\
 hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
-\includegraphics[width=0.13\linewidth]{photo_Kristofer} & 
-\includegraphics[width=0.13\linewidth]{photo_Jokull} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
-\end{tabular}
-}
+\includegraphics[width=0.13\linewidth]{photo_Kristofer} &
+\includegraphics[width=0.13\linewidth]{photo_Jokull} &
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} &
+\includegraphics[width=0.13\linewidth]{photo_Jonas_cropped}
+\end{tabular}}
 % Normally there will not be any pictures but we want
 % these so that we can connect faces to names in the course
 % We also want birthdates so that we can tell people with the same
@@ -39,7 +38,7 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test. 
+We present two novel techniques for using n-gram models in natural language generation(NLG). Our main focus was creating sentences that would qualify as human authored sentences using two approaches. We investigate how various parameters such as smoothing, n-gram model order, and part-of-speech(POS) tag-sets affect the generated text. The produced text is evaluated by a perception test with a set of baseline and human authored sentences.
 
 Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
 \end{abstract}
@@ -96,6 +95,7 @@ In \cite{Ratnaparkhi00} three methods for text generation are examined. One of t
 
 Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Our method}
@@ -128,7 +128,7 @@ The group came up with the idea to compare two different approaches to generatin
 \subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
 
-The distribution table contains the n-1-gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
+The distribution table contains the n-1-Gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
 
 To be able to use fallback the tri-gram model also had a bi-gram model. If a word/tag was not found using the tr-gram model we would fallback to the bi-gram model.
 
@@ -148,8 +148,6 @@ The smoothing techniques chosen were:
 \item Expected Likelihood Estimate
 \item Simplified Good-Turing Frequency Estimation
 \end{itemize}
-
-\textbf{Maybe the sections below are not necessary?}
 
 \subsubsection{Maximum Likelihood Estimate}
 Here we will write clever stuff about this smoothing technique
@@ -183,7 +181,6 @@ bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
 
 \subsection{Experiment ...}
-
 Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one. 
 
 \begin{figure}
@@ -195,7 +192,9 @@ is large enough to read and that the axes are labelled.}
 \label{fig:histogram}
 \end{figure}
 
-
+Bla bla bla bla bla Figure~\ref{fig:histogram} bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 
 \begin{table}
 \begin{center}
@@ -213,6 +212,11 @@ describes what is in the table.}
 
 What answer was found to the research question; what did the study find? Was the tested hypothesis true?
 
+Bla bla bla bla bla Table~\ref{tab:results} bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\section{Future Work}
+\label{sec:future}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Summary and Conclusions}
@@ -225,20 +229,13 @@ We list up the problem we ran into and what we could have done different.
 
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
 \label{sec:contributions}
 We the members of project group 61 unanimously declare that
 we have all equally contributed toward the completion of this
-project.
-
-Should we list up how many hours each member put into the project?
-
-Should we also list up how many hours each part of the project took?
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{plain}
