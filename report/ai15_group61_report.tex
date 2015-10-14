@@ -4,6 +4,7 @@
 \usepackage{epsfig}
 \usepackage{graphics}
 \usepackage{fancyhdr}
+\usepackage{subfig}
 
 \graphicspath{{pictures/}}
 
@@ -167,9 +168,19 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \section{Experimental results}
 \label{sec:exps}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t!]%
+    \centering
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/boxplot_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/boxplot_resultsByModelAndSmoothing} }}%
+    \qquad
+    \caption{Model performances compared with respect to smoothing methods. Diamond represents means.}%
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/histogram_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/histogram_resultsByModelAndSmootingMethod} }}%
+    \caption{Model performances compared with respect to smoothing methods. Dotted lines represent means.}%
+    \label{fig:example}%
+\end{figure}
 
 \subsection{Experimental setup}
 Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
