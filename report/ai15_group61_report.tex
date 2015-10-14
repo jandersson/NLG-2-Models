@@ -30,7 +30,7 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \setlength{\headheight}{15pt}
 \fancyhf{}
 \lhead{DD2380 ai15} % DO NOT REMOVE!!!!
-\rhead{K. Hannesson, J. Jóhannsson, E. Ahlsén, J. Andersson} %% UPDATE WITH YOUR NAMES
+\rhead{K. Hannesson, J. Jóhannsson, E. Ahlsén, J. Andersson}
 
 \begin{document}
 
@@ -38,7 +38,7 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two novel techniques for using n-gram models in natural language generation(NLG). Our main focus was creating sentences that would qualify as human authored sentences using two approaches. We investigate how various parameters such as smoothing, n-gram model order, and part-of-speech(POS) tag-sets affect the generated text. The produced text is evaluated by a perception test with a set of baseline and human authored sentences.
+We present two techniques for using n-gram models in natural language generation(NLG). Our main focus was creating sentences that would qualify as human authored sentences using two approaches. We investigate how various parameters such as smoothing, n-gram model order, and part-of-speech(POS) tag-sets affect the generated text. The produced text is evaluated by a perception test with a set of baseline and human authored sentences.
 
 Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
 \end{abstract}
@@ -49,37 +49,33 @@ Our results show that using different smoothing algorithms can change the result
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{NOTE}
-\begin{itemize}
-
-\item The following sections are arranged in the order they would appear in a scientific paper. We think that these sections need to be there and written. However, these are only guidelines and if you think that some of these sections or subsections are irrelevant to you, please feel free to remove them. Similarly, if you want to include more sections or subsections please go ahead. Also feel free to rearrange them according to your convenience, but keeping some common sense (eg.~Introduction cannot come after Conclusions).
-
-\item \textit{Introduction, Related Works, Experimental Results, Discussions, Summary} are sections that MUST be contained.
-
-\item In the section of your \textit{Method}: please do not list your project as log book entries, please talk about the final method you want to present to us. Talk about the method scientifically or technically and not as "I did this..." "Then I tried this..." "this happened...." etc.
-
-\item Do not paste any code unless it is very relevant!
-
-\item The section \textit{Contributions} is a place to express any difference in contributions. The default assumption is that you all agree that all of you had an equal part to play in the project.
-
-\item We suggest that you try to write this as scientifically as possible and not simply like a project report. Good Luck!
-
-\item Please remove \textbf{this} NOTE section in your final report.
-
-\end{itemize}
-\section{Introduction (1--2 pages)}
+%\section*{NOTE}
+%\begin{itemize}
+%
+%\item The following sections are arranged in the order they would appear in a scientific paper. We think that these sections need to be there and written. However, these are only guidelines and if you think that some of these sections or subsections are irrelevant to you, please feel free to remove them. Similarly, if you want to include more sections or subsections please go ahead. Also feel free to rearrange them according to your convenience, but keeping some common sense (eg.~Introduction cannot come after Conclusions).
+%
+%\item \textit{Introduction, Related Works, Experimental Results, Discussions, Summary} are sections that MUST be contained.
+%
+%\item In the section of your \textit{Method}: please do not list your project as log book entries, please talk about the final method you want to present to us. Talk about the method scientifically or technically and not as "I did this..." "Then I tried this..." "this happened...." etc.
+%
+%\item Do not paste any code unless it is very relevant!
+%
+%\item The section \textit{Contributions} is a place to express any difference in contributions. The default assumption is that you all agree that all of you had an equal part to play in the project.
+%
+%\item We suggest that you try to write this as scientifically as possible and not simply like a project report. Good Luck!
+%
+%\item Please remove \textbf{this} NOTE section in your final report.
+%
+%\end{itemize}
+\section{Introduction} %(1-2 pages)
 \label{sec:intro}
-
+%**
+%Why was the study undertaken? What was the research question, the tested hypothesis or the purpose of the research?
+%**
 Language models are a staple in many domains including speech recognition, optical character
-recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modelling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
 
 In the following sections we will describe the difference in the models generated and how including grammar affects
-
-
-**
-Why was the study undertaken? What was the research question, the tested hypothesis or the purpose of the research?
-**
-
 
 \section{Outline}
 This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Section~\ref{sec:relwork} we list out how this project relates to other projects and what we did use from those projects.In Section~\ref{sec:method} we go into details about the implementation of the two models and list up which techniques we used. In Section~\ref{sec:exps} we explain how experiment were done the results.In Section~\ref{sec:summary} we summarize the most important results of this work.Finally in Section~\ref{sec:contributions} we list up the contribution of each team member to the project.
@@ -91,9 +87,11 @@ This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Sect
 
 In general, according to \cite{Reiter:2000:BNL:331955}, NLG systems are constructed after performing requirements analysis whereby the goals of the NLG system are defined. Varied requirements have produced several different NLG systems over the years. Indeed, the project team designed the two NLG approaches after performing such a requirements analysis. Again \cite{Reiter:2000:BNL:331955} explains that one approach to generating text is not through NLG, rather by a technique known as mail-merge whereby a template is created and the appropriate data is filled in. In designing the experiment for the "Inferred Grammar" model, an approach similar to mail-merge was carried out.
 
-In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored.
+In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of place-holders is constructed. The place-holders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored and measured against a baseline.
 
-Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project.
+Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project. A discussion of n-gram order by \cite{RussellNorvigAIBook3rd} demonstrates that unigrams are a poor representation of the english language and that bigrams and trigrams provide better approximations. Unigrams perform poorly due to the loss of any ordering based on previous words or tokens \cite{RussellNorvigAIBook3rd}. An error in our experiment construction led to the inferred grammar model behaving similarly to this bag of words model.
+
+The Natural Language Tool Kit (NLTK) boosted development productivity through a set of tools such as probability distribution classes, ngram decomposition functions, corpora and corpora importing utilities. We extensively referenced \citep{NLTKBook09} for guidance in use of the NLTK. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,7 +99,7 @@ Several textbooks explore the topic of language modelling using n-grams and part
 \section{Our method}
 \label{sec:method}
 
-We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
+We split into pairs with each pair implementing a model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
 
 \begin{itemize}
 \item Brown corpus
