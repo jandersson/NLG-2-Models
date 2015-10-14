@@ -7,6 +7,8 @@ import nltk
 import random
 import ngramTrials2
 
+smoothing_string = "ELEProbDist"
+
 def main():
     """
     Provide an entry point into program.
@@ -24,9 +26,7 @@ def main():
         sentence_tags = [tag for (word, tag) in sentence if word.isalnum()]
         sentences_of_tags.append(sentence_tags)
 
-
     testModelGrammar = generateModelFromSentences(sentences_of_tags, smoothing, order) #Create trigram of only grammar
-
     ##NGRAM MODEL FOR TAGS AND WORDS
     testModelwordtags = generateModelFromSentences(sents, smoothing, order, True)
 
@@ -35,10 +35,15 @@ def main():
 
     ## HERE BE DEBUGGING
     #TODO: Implement function to split corpus sentences into training and test set.
-    brown_sents_ = brown.sents()
+    brown_sents_ = brown.tagged_sents()
     brown_sents = list(brown_sents_)
     word_model = ngramTrials2.nGramModel(brown_sents, smoothing, order)
-    infGrammarGenerate(testModelGrammar, testModelwordtags, word_model, 100)
+    infGrammarGenerate(testModelGrammar, testModelwordtags, word_model, 1000)
+
+
+    #Testing out other model
+    # ngramTrials2.nGramModel(sents_,smoothing,order)
+
     #
     # print(perplexity(word_model, test_sent))
 
@@ -66,8 +71,10 @@ def generateModelFromSentences(sents, smoothingF, n, isTagged=False):
 
 def entropy(model, test):
     """Calculate entropy given an ngram model and a list of test sentences."""
+
     p = 0
     n = 0
+    order = model.getOrder()
     if order == 2:
         for sent in test:
             n += len(sent)
@@ -112,16 +119,20 @@ def infGrammarGenerate(grammar_model, word_tag_model, word_model, nrSents):
     #Create an empty list to hold our conditional tokens
     gram_prevTk = list()
     word_prevTk = list()
-    grammar_order = grammar_model.getOrder()
+    counter = 0
+    tagged_sentence = list()
+    best_sentence = ("", 999999)
+    order = grammar_model.getOrder()
     for _ in range(nrSents): #Generate a sentence, nrSents times
         text = "" #Initialize empty string
-        for _ in range(grammar_order-1): #Generate sentences on a given word/symbol (here it is the start symbol)
+        for _ in range(order-1): #Generate sentences on a given word/symbol (here it is the start symbol)
             gram_prevTk.append("<s>")
             word_prevTk.append("START")
         gram_tk = "" #Initialize empty token string
         word_tk = ""
         while(gram_tk != "</s>"): #Loop until we find an END token
             text += word_tk + " "
+            tagged_sentence.append((word_tk, gram_tk))
             gram_tk = grammar_model.generate(list(gram_prevTk))
             wordgram = gram_tk.upper()
             word_tk = word_tag_model.generate(list(word_prevTk))
@@ -131,20 +142,21 @@ def infGrammarGenerate(grammar_model, word_tag_model, word_model, nrSents):
             word_prevTk.pop(0)
             gram_prevTk.append(gram_tk)
             word_prevTk.append(wordgram)
-        check_text = text.lower()
-        # print([check_text.split()])
-        if len(text.split()) < grammar_order:
-            gram_prevTk = list()
-            word_prevTk = list()
-            continue
-        elif perplexity(word_model, [check_text.split()]) > 100:
-            gram_prevTk = list()
-            word_prevTk = list()
-            continue
-        print(perplexity(word_model, [check_text.split()]))
-        print(text.strip())
         gram_prevTk = list()
         word_prevTk = list()
+        counter += 1
+        print(counter)
+        if not validate_sentence(text, order):
+            continue
+        perplexity = word_model.perplexity(tagged_sentence)
+        if perplexity < best_sentence[1]:
+            best_sentence = (text.strip(), perplexity)
+            write_to_file(best_sentence, smoothing_string)
+            print(text.strip())
+            # print(text.strip())
+        gram_prevTk = list()
+        word_prevTk = list()
+
 
 
 def split(sentences, fraction):
@@ -158,6 +170,34 @@ def split(sentences, fraction):
     random.shuffle(split_sentences)
     break_point = int(len(split_sentences) * fraction)
     return split_sentences[:break_point], split_sentences[break_point:]
+
+
+def write_to_file(text, smoothingTechnique):
+    model_name = "InferredGrammar"
+    sentence = text[0]
+    perplexity = float(text[1])
+    print("text[1] = " + str(text[1]))
+    filename = smoothingTechnique + ".txt"
+    with open(filename, "a") as file:
+        file.write("%s\t%s\t%s\t%.02f\n" % (model_name, smoothingTechnique, sentence, perplexity))
+        file.close()
+
+def validate_sentence(sentence, order):
+    """
+    Check if a sentence meets various constraints such as length.
+    :param sentence:
+    :return:
+    """
+    sent_length = len(sentence.split())
+    maximum_phrase_length = 13
+    minimum_phrase_length = 6
+
+    if
+    if (sent_length >= maximum_phrase_length) or (order >= sent_length) or (sent_length <= minimum_phrase_length):
+        print("Rejected sentence: ")
+        return False
+    else:
+        return True
 
 
 def generateText(model, sents):

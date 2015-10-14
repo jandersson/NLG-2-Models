@@ -14,10 +14,10 @@ Group 61\\
 K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 Agust 20 & January 12 & BIRTHDATE3 & February 10 \\
 hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
-\includegraphics[width=0.13\linewidth]{photo_Kristofer} & 
+\includegraphics[width=0.13\linewidth]{photo_Kristofer.jpg} & 
 \includegraphics[width=0.13\linewidth]{photo_Jokull} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo.jpg} & 
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo.jpg}
 \end{tabular}} 
 % Normally there will not be any pictures but we want
 % these so that we can connect faces to names in the course
@@ -92,11 +92,10 @@ bla bla bla bla bla bla Section~\ref{sec:summary} bla bla bla bla bla
 \section{Related work}
 \label{sec:relwork}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla \cite{RussellNorvigAIBook3rd}
-bla bla bla bla bla bla
+In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored. 
+  
+Several textbooks explore the topic of language modeling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,7 +146,7 @@ bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
 
 \subsection{Experimental setup}
-Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
+Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpu\cite{NLTKBook09} s. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
 
 \subsection{Experiment ...}
 
@@ -193,7 +192,6 @@ Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
@@ -204,8 +202,6 @@ project.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibliographystyle{plain}
 \bibliography{reflist}
-
-
+\bibliographystyle{plain}
 \end{document}
