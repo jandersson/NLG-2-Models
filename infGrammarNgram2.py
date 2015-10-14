@@ -75,7 +75,9 @@ class nGramModel():
 
         else:
             for (k,v) in dic.items():
-                if (n == 3):
+                if (n == 3 and not self.tagged):
+                    dic[k] = ConditionalProbDist(v, smoothingF)
+                elif (n == 2 and self.tagged):
                     dic[k] = ConditionalProbDist(v, smoothingF)
                 else:
                     self.probNGrams(n-1, v, smoothingF)
@@ -93,7 +95,7 @@ class nGramModel():
         return self.model[previous].prob(word)
 
 
-    def generate(self, words):
+    def generate(self, words, tag=None):
         order = self.order
         dictionary = self.model
         while (order > 2):
@@ -102,8 +104,11 @@ class nGramModel():
                 return
             dictionary = dictionary[words.pop(0)]
             order -= 1
-
-        probdist = dictionary[words.pop(0)]
+        if (order == 2 and tag != None):
+            dictionary = dictionary[word.pop(0)]
+            probdist = dictionary[tag]
+        else: 
+            probdist = dictionary[words.pop(0)]
         return probdist.generate()
 
     def probSentence(self, sentence):
