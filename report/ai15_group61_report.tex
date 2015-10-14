@@ -14,10 +14,10 @@ Group 61\\
 K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 Agust 20 & January 12 & BIRTHDATE3 & February 10 \\
 hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
-\includegraphics[width=0.13\linewidth]{photo_Kristofer.jpg} & 
+\includegraphics[width=0.13\linewidth]{photo_Kristofer} & 
 \includegraphics[width=0.13\linewidth]{photo_Jokull} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo.jpg} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo.jpg}
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
 \end{tabular}} 
 % Normally there will not be any pictures but we want
 % these so that we can connect faces to names in the course
@@ -70,32 +70,29 @@ Our results show that using different smoothing algorithms can change the result
 \label{sec:intro}
 
 Language models are a staple in many domains including speech recognition, optical character
-recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately[Chen-Goodman]. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
 
+In the following sections we will describe the difference in the models generated and how including grammar affects
+ 
+
+**
 Why was the study undertaken? What was the research question, the tested hypothesis or the purpose of the research?
+**
 
 
-\subsection{Contribution}
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-
-\subsection{Outline}
-Bla bla bla bla bla bla bla Section~\ref{sec:relwork} bla bla bla bla 
-bla bla bla bla bla Section~\ref{sec:method} bla bla bla bla bla bla 
-bla bla bla bla bla bla bla bla bla bla bla Section~\ref{sec:exps}
-bla bla bla bla bla bla Section~\ref{sec:summary} bla bla bla bla bla
+\section{Outline}
+This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Section~\ref{sec:relwork} we list out how this project relates to other projects and what we did use from those projects.In Section~\ref{sec:method} we go into details about the implementation of the two models and list up which techniques we used. In Section~\ref{sec:exps} we explain how experiment were done the results.In Section~\ref{sec:summary} we summarize the most important results of this work.Finally in Section~\ref{sec:contributions} we list up the contribution of each team member to the project.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related work}
 \label{sec:relwork}
 
-In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored. 
-  
-Several textbooks explore the topic of language modeling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and 
-
+Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+bla bla bla bla bla bla bla bla bla bla \cite{RussellNorvigAIBook3rd}
+bla bla bla bla bla bla
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,11 +103,22 @@ Should contain the following: When, where, and how was the study done? What mate
 
 
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
-
+\subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB)) 
 
+The distribution table contains the n-1-Gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
+
+To be able to use fallback each model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
+
+To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
+
+\subsubsection{Sentence generation}
+Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model. 
+
+\subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
 
+\subsection{Smoothing}
 The smoothing techniques chosen were:
 \begin{itemize}
 \item Maximum Likelihood Estimate
@@ -118,6 +126,19 @@ The smoothing techniques chosen were:
 \item Expected Likelihood Estimate
 \item Simplified Good-Turing Frequency Estimation
 \end{itemize}
+
+\subsubsection{Maximum Likelihood Estimate}
+Here we will write clever stuff about this smoothing technique
+
+\subsubsection{Laplace smoothing}
+Here we will write clever stuff about this smoothing technique
+
+\subsubsection{Expected Likelihood Estimate}
+Here we will write clever stuff about this smoothing technique
+
+\subsubsection{Simplified Good-Turing Frequency Estimation}
+Here we will write clever stuff about this smoothing technique
+
 
 \subsection{Implementation}
 \label{sec:impl}
@@ -134,6 +155,8 @@ We split into pairs with each pair implementing their model. We decided to go wi
 
 
 
+
+
   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -146,7 +169,7 @@ bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
 
 \subsection{Experimental setup}
-Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpu\cite{NLTKBook09} s. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
+Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
 
 \subsection{Experiment ...}
 
@@ -192,6 +215,7 @@ Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
 bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
@@ -202,6 +226,8 @@ project.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibliography{reflist}
 \bibliographystyle{plain}
+\bibliography{reflist}
+
+
 \end{document}
