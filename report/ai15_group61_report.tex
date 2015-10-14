@@ -94,7 +94,9 @@ In general, according to \cite{Reiter:2000:BNL:331955}, NLG systems are construc
 
 In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored.
 
-Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project.
+Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project. A discussion of n-gram order by \cite{RussellNorvigAIBook3rd} demonstrates that unigrams are a poor representation of the english language and that bigrams and trigrams provide better approximations. Unigrams perform poorly due to the loss of any ordering based on previous words or tokens \cite{RussellNorvigAIBook3rd}. An error in our experiment construction led to the inferred grammar model behaving similarly to this bag of words model.
+
+The Natural Language Tool Kit (NLTK) boosted development productivity through a suite of tools such as probability distribution classes, n-gram decomposition functions, corpora and corpora importing utilities, and speech tagging. We extensively referenced \cite{NLTKBook09} for guidance in use of the NLTK. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
