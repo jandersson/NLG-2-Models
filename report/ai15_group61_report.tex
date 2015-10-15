@@ -100,43 +100,44 @@ Beginning in \ref{sec:relwork}, we start off by briefly describing how our proje
 \section{Our method}
 \label{sec:method}
 
-The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
+The aim of this project was to compare two different approaches to generating text from a corpus, both incorporating grammar but in different ways. Both approaches used the Brown corpus and trigrams, with fallback to bigrams permitted. Four smoothing techniques were also picked for use in both approaches. To be able to distinguish words that are at the beginning of a sentence and a the end of a sentence both approaches padded each sentence with pseudo start-of-sentence and end-of-sentence symbols. The number of symbols added to the start and end of sentence would correspond n-1 in the model, so 2 start symbols and 2 end symbols were added for the trigram models.
 
 \subsection{Sentence generation}
-The same general method for word generation was used for both of the models; after coming up with a probability distribution for the next word, which is done differently in each of the models, a random word would be picked from the distribution, where the probability of a word being picked is equal to that words probability in the distribution.
+The same general method for word generation was used in both models; when querying a probability distribution for the next word, a random word would be picked from the distribution, where the probability of a word being picked is equal to that words frequency in the distribution. However, these probability distributions are constructed differently in the models
 
 
-\subsection{Semantic model}
-The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
+\subsection{The Semantic Model}
+The Semantic Model (SM) includes both word and grammar information within its probability distribution. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram made from ``$w_1 w_2 w_3$'' would be $((w_1,t_1), (w_2, t_2), (w_3, t_3))$.
+The probability distribution table contains the first two word/tag tuples as a key pointing to the probability distribution of the next word/tag combination. 
 
-The distribution table contains the n-1-gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
+The Semantic Model generates words by looking at $P((w_3, t_3)|(w_1,t_1),(w_2, t_2))$.
 
-To be able to use fallback each model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
-
-To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
+%To be able to use fallback the model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
 
 \subsubsection{Hypothesis}
-The Semantic model aims at modeling chains of sense-disambiguated words by building a model of (word,POS-tag) tuples from a tagged corpus. The idea is to constrain the sense in which a word is used to the word-senses of the preceding words. Using word-senses effectively expands the size of the vocabulary by a factor equal to the average number of different POS-tags for an average word in the corpus. This leads to more sparse data in the model, compared to modeling words by themselves, but it should also eliminate a lot of problems with semantic disagreement in the generated text.
+The Semantic Model aims to model chains of sense-disambiguated words. This constrains the sense in which a word is used to the word-senses of the preceding words. Using word-senses may effectively expand the size of the vocabulary by a factor equal to the average number of different POS-tags for an average word in the corpus. This leads to sparser data in the model, compared to modeling words by themselves, but it should also eliminate a lot of problems with semantic disagreement in the generated text.
 
 \subsection{Inferred grammar model}
-The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags, which the word model would then use as a constraint for selecting the next word. In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the number of preceding words that a new word depended on, but instead constraining it to a specific grammatical tag.
+The Inferred Grammar Model (IGM) splits grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags, which the word model would then use as a constraint for selecting the next word. In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the number of preceding words that a new word depended on, instead constraining the word to a specific grammatical tag.
+
 The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-grammar model then generates words by looking at $P(w_3|w_1,w_2,t_3)$.
 
 \subsubsection{Hypothesis}
-The idea behind the Inferred grammar model the grammatical structure of sentences separately from the words in the sentences, allowing any semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained on the same training set. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
+The idea behind IGM is that considering the grammatical structure of sentences separately from the words in the sentences will allow semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained from the same corpus. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
 
 Since the vocabulary of POS-tags is much smaller than the vocabulary of the words in the the training-set, the data for the grammar model will be much more dense.
 
 \subsection{Smoothing}
 \label{subsec:smoothing}
 
-The problem with using only Maximum Likelihood Estimation is that it maximises the likelihood to generate the training set. Since the training set is limited in scope, our n-gram models will suffer from sparse data in the sense that a lot of n-grams only occur once or a few times in the training set. MLE will assign them a very low probability, even though they might be perfectly reasonable n-grams to build sentences upon. We chose three different smoothing techniques besides MLE for testing our models.
+The problem with using only Maximum Likelihood Estimation is that it, in a sense, maximises the likelihood to generate the training set. Since the training set is limited in scope, our N-gram models will suffer from sparse data in the sense that a lot of N-grams only occur once or a few times in the training set. MLE will therefore attribute them a very low probability, even though they might be perfectly reasonable N-grams to build sentences upon. We chose three different smoothing techniques besides MLE for testing our models.
 
 \subsubsection{Laplace smoothing}
 Laplace smoothing works simply by increasing the count of every n-gram by one, before calculating the MLE values, thus effectively redistributing a chunk of the probability mass from the more frequent n-grams to the less frequent ones.
 
 \subsubsection{Expected Likelihood Estimate}
-Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothing, that only increases the count of all n-grams by a fraction between 0 and 1. This is to counter the effect of Laplace smoothing where a large chunk of the probability mass would get redistributed if the model has a high ratio of low-count n-grams to high-count n-grams.
+Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothing that only increases the count of all N-grams by a fraction between 0 and 1. This is to counter the effect of Laplace smoothing where a very large chunk of the probability mass would get redistributed if the model has a high ratio of low-count n-grams to high-count N-grams.
+
 
 \subsubsection{Simplified Good-Turing Frequency Estimation}
 \subfile{smoothing-goodturing}
@@ -144,18 +145,10 @@ Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothin
 \subsection{Implementation}
 \label{sec:impl}
 
-We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
-\begin{itemize}
-\item Brown corpus
-\item Treebank Part of Speech Tagger (Maximum entropy)
-\item Punkt Tokenizer Models
-\item Mappings to the Universal and Brown Part-Of-Speech Tagset
-\item Conditional Frequency Distribution and Conditional Probability Distribution classes
-\item Classes for each of the above mentioned smoothing techniques
-\end{itemize}
+We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. 
 
 \subsubsection{Deviations from the plan}
-Our implementations unfortunately failed to conform to the specifications we had outlined. The next section outlines how the implemented models deviated from the plan and how the experiment was affected.
+Our implementations unfortunately failed to conform to the specifications we had outlined. Section~\ref{sec:exps} below outlines how the implemented models deviated from the plan and how the experiments were affected.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
