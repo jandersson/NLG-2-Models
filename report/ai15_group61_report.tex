@@ -114,7 +114,11 @@ To be able to distinguish words that are in the beginning of sentence and in the
 Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model.
 
 \subsection{Inferred grammar model}
-The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags. "Generate(<t3>|<t1>,<t2>)" which the word model would use as a constraint for selecting the next word, Generate(w3 | w1, w2, <t3>). In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the number of preceding words that a new word depended on, but instead constraining it to a specific grammatical tag.
+The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags, which the word model would then use as a constraint for selecting the next word. In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the number of preceding words that a new word depended on, but instead constraining it to a specific grammatical tag.
+The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-grammar model then generates words by looking at $P(w_3|w_1,w_2,t_3)$.
+
+\subsubsection{hypothesis}
+The idea behind Inferred grammar model is to generate a sentence of 
 
 \subsection{Smoothing}
 
@@ -144,12 +148,10 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \item classes for each of the above mentioned smoothing techniques
 \end{itemize}
 
-<<<<<<< HEAD
 \subsubsection{Deviations from the plan}
 Our implementations unfortunately failed to conform to the specifications we had outlined. The next section outlines how the implemented models deviated from the plan and how the experiment was affected.
 
-=======
->>>>>>> 31026df02542aeb89fad135b06abfd4db5c10cc9
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Experimental results}
