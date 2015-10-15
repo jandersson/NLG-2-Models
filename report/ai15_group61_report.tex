@@ -107,7 +107,7 @@ The group came up with the idea to compare two different approaches to generatin
 The same general method for word generation was used for both of the models; after coming up with a probability distribution for the next word, which is done differently in each of the models, a random word would be picked from the distribution, where the probability of a word being picked is equal to that words probability in the distribution.
 
 
-\subsection{Built in grammar model}
+\subsection{Semantic model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
 
 The distribution table contains the n-1-gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
@@ -116,14 +116,14 @@ To be able to use fallback each model had 2-grams up to n-grams models. If a wor
 
 To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
 
-\subsubsection{hypothesis}
+\subsubsection{Hypothesis}
 The Semantic model aims at modeling chains of sense-disambiguated words by building a model of (word,POS-tag) tuples from a tagged corpus. The idea is to constrain the sense in which a word is used to the word-senses of the preceding words. Using word-senses effectively expands the size of the vocabulary by a factor equal to the average number of different POS-tags for an average word in the corpus. This leads to more sparse data in the model, compared to modeling words by themselves, but it should also eliminate a lot of problems with semantic disagreement in the generated text.
 
 \subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags, which the word model would then use as a constraint for selecting the next word. In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the number of preceding words that a new word depended on, but instead constraining it to a specific grammatical tag.
 The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-grammar model then generates words by looking at $P(w_3|w_1,w_2,t_3)$.
 
-\subsubsection{hypothesis}
+\subsubsection{Hypothesis}
 The idea behind the Inferred grammar model the grammatical structure of sentences separately from the words in the sentences, allowing any semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained on the same training set. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
 
 Since the vocabulary of POS-tags is much smaller than the vocabulary of the words in the the training-set, the data for the grammar model will be much more dense. 
