@@ -1,14 +1,18 @@
 \documentclass[ai15_group61_report.tex]{subfiles}
 \begin{document}
 
-In this section we present the results of our experiments. We present the performance of the algorithms tested and which of the techniques used performed best. We show the ngram count affects the sentences generated and what affect smoothing could have on a sentence generation.
+Superficially the results of the experiment seem to imply that the IGM performed much worse than the SM, but since both of the implementations were inconsisten with the specifications, we can not really draw any conclusions about the models outlined in \ref{sec:method}.
 
-We present that using
+We think that IGM* has such abysmal performance because it effectively works like a unigram-model. The grammar-model in this implementation generates a sencente structure, but the word-grammar model only uses the tag context and not the word context for generating a new word. On top of that, it only uses the tags from the two preceding words, but not the tag generated to constrain the new word, thereby losing all locality.
 
-\subsection{nGram count}
-We testing out different sizes 
+The SM* was much closer to specification, but still contains the flaw that it uses a POS-tagger to tag the generated words, instead of using the gold stanadrd tags from the training corpus. That makes it impossible for us to use the gathered data to draw any concrete conclusions about our hypothesis. 
 
-\subsection{Smoothing}
+
+\subsection{N-gram count}
+In determining the order of our models, we found the output produced by quadgram models were suspiciously close to human authored text. Indeed the authors of \cite{Jurafsky2000} state that the n-gram probability matrices become sparse as order increases, diminishing the set of possible continuations to approximately one. This effectively generates sentences which are found verbatim in the corpus. After encountering this phenomenon, it was evident that using the Brown corpus with trigram models was the best trade off between data density and model order.  
+
+\subsection{Improvements}
+Since our results were invalidated by the erroneous implementations of our models, the models have been reimplemented, this time to specification, and could be employed in another perception test. As far as the survey goes, we think that it was properly designed, and can be used again with new respondents. We could also explore how to utilize the functionality of the different smoothing techniques by making explicit the bin-size of the frequency distributions. That is, to say something about how many zero counts are leaving room for, thereby accounting for the missing mass.
 
 \end{document}
 
