@@ -9,7 +9,7 @@ from nltk.probability import MLEProbDist
 
 from math import log
 import random
-import ngramTrials2
+import SemanticModel
 
 smoothing_string = "SimpleGoodTuringProbDist"
 
@@ -41,7 +41,7 @@ def main():
     #TODO: Implement function to split corpus sentences into training and test set.
     brown_sents_ = brown.tagged_sents()
     brown_sents = list(brown_sents_)
-    word_model = ngramTrials2.nGramModel(brown_sents, smoothing, order)
+    word_model = SemanticModel.nGramModel(brown_sents, smoothing, order)
     infGrammarGenerate(testModelGrammar, testModelwordtags, word_model, 1000)
 
     baseline_model = generateModelFromSentences(brown.sents(), LaplaceProbDist, 2)

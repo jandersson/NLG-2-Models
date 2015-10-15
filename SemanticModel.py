@@ -53,7 +53,7 @@ class utils:
         return tCorpus[:split], tCorpus[split:] #train, test
 
     @staticmethod
-    def bestSentencesByPerplexity(M, testSet,count):
+    def bestSentencesByPerplexity(M, testSet):
         ListOfSents = []
         for sent in testSet:
             ListOfSents.append((sent,M.entropyOfSentence(sent)))
@@ -62,13 +62,14 @@ class utils:
 
     @staticmethod
     def generateSentencesWithPerplexity(M, count):
+        print("Starting the sentence generation")
         ListOfSents = []
-        while len(ListOfSents) < 10:
+        while len(ListOfSents) < 5:
             taggedSent, sent = M.createSentenceWithTags()
             perplexity = M.perplexity(taggedSent)
             if not utils.IsSentenceInBrownCorpus(sent):
                 if 5 < len(sent.split(" ")) < 14:
-                    print("Adding sentence nr: " + str(len(ListOfSents)))
+                    print("Adding sentence: " + str(len(ListOfSents)+1))
                     ListOfSents.append((sent,perplexity))
         return sorted(ListOfSents,key=lambda x: x[1])[:count] #Sorts the list in descending order
 
@@ -180,7 +181,6 @@ class nGramModel:
         tagged = tagged[-(curNGram - 1):]
         grams =  list(nltk.ngrams(tagged, curNGram-1))[0][0] if curNGram == 2  else list(nltk.ngrams(tagged, curNGram-1))[0]
         try:
-            print(grams)
             return self.models[curNGram-2][grams].generate()
         except:
             try:
@@ -199,35 +199,18 @@ class nGramModel:
             text += tk + " "
             tagged,tk = self.generate(text.strip(),True)
             taggedSent.append(tagged)
-        print(text.strip())
         return taggedSent, text.strip().capitalize()
 
     def entropyOfSentence(self, sentence):
+        """
+        Function that runs through all words in the sentence and calculates the entropy
+        :param sentence: The sentence in clear text
+        :return: the entropy of a given sentence
+        """
         p = 0
         counter = 0;
         self.addPseudoToSentence(sentence,self.n-1)
         grams = nltk.ngrams(sentence,self.n)
-        for gram in grams:
-            context =  tuple(gram)[:self.n-1]
-            word =  tuple(gram)[self.n-1]
-            prob = self.prob(word,context)
-            counter += 1
-            if prob > 0:
-                p += -log(prob)
-        return p/counter
-
-    def entropy(self, testSet):
-        """
-        Calculates the entopy of the model given a testset
-        :param testSet: Trainingset
-        :return: Entropy
-        """
-        print("Calculating entropy for a given testSet")
-        p = 0
-        counter = 0;
-        self.addPseudo(testSet,self.n)
-        t = self.listToTuples(testSet)
-        grams = nltk.ngrams(t,self.n)
         for gram in grams:
             context =  tuple(gram)[:self.n-1]
             word =  tuple(gram)[self.n-1]
@@ -246,72 +229,25 @@ class nGramModel:
         e = self.entropyOfSentence(sentence)
         return 2**e
 
-print("loading the corpus!")
+print("Loading the corpus!")
 tagSet = "universal"
 brown_sets = [set([i.lower() for i in s]) for s in brown.sents()]
 TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
+
+
+##PLEASE CHANGE THE FOLLOWING VALUES
+
 gramCount = 3
-testSent = TaggedSent
-train, test = utils.generateTrainAndTestSets(TaggedSent,0.7);
-Mo = nGramModel(train, probability.LaplaceProbDist, gramCount)
-#print(utils.bestSentencesByPerplexity(model,test,10))
+trainingSetFractionSize = 0.7
+smoothingTechnique = probability.MLEProbDist
+#smoothingTechnique = probability.LaplaceProbDist
+#smoothingTechnique = probability.ELEProbDist
+#smoothingTechnique = probability.SimpleGoodTuringProbDist
+
+
+#STOP EDITING :D
+
+train, test = utils.generateTrainAndTestSets(TaggedSent,trainingSetFractionSize);
+Mo = nGramModel(train, smoothingTechnique, gramCount)
 genSentences = utils.generateSentencesWithPerplexity(Mo,10)
-utils.createSentenceFile(genSentences,"LaplaceProbDist","LaplaceProbDist.txt")
-
-
-
-'''
-from tkinter import *
-
-
-# Here, we are creating our class, Window, and inheriting from the Frame
-# class. Frame is a class from the tkinter module. (see Lib/tkinter/__init__)
-class Window(Frame):
-    counter = 0
-    # Define settings upon initialization. Here you can specify
-    def __init__(self, master=None):
-
-        # parameters that you want to send through the Frame class.
-        Frame.__init__(self, master)
-        #reference to the master widget, which is the tk window
-        self.master = master
-
-        #with that, we want to then run init_window, which doesn't yet exist
-        self.init_window()
-
-    #Creation of init_window
-    def init_window(self):
-
-        # changing the title of our master widget
-        self.master.title("GUI")
-
-        # allowing the widget to take the full space of the root window
-        self.pack(fill=BOTH, expand=1)
-
-        # creating a button instance
-        createSentenceButton = Button(self, text="Create sentence",command=self.showText)
-
-        # placing the button on my window
-        createSentenceButton.place(x=0, y=0)
-
-    def showText(self):
-        print("creating sentence")
-        text = Label(self, text=model.createSentences(1))
-        text.pack()
-
-
-    def client_exit(self):
-        exit()
-
-# root window created. Here, that would be the only window, but
-# you can later have windows within windows.
-root = Tk()
-
-root.geometry("800x600")
-
-#creation of an instance
-app = Window(root)
-
-#mainloop
-root.mainloop()
-'''
+utils.createSentenceFile(genSentences,smoothingTechnique.__name__,smoothingTechnique.__name__+".txt")
