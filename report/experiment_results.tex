@@ -9,7 +9,7 @@ The models used in the experiments, we later realized, were implemented in a way
 We will use SM* and IGM* to refer to the implementation of the Semantic model and Inferred grammar model used in the experiment.
 
 \subsubsection{Semantic model}
-The Semantic model was inconsistent with the specifications in that it 
+The SM* model was inconsistent with the specifications in that even though the model provides a word along with its tag, these tags were not used for subsequent word generation. Instead the most recent two words were sent in and a POS tagger in the NLTK toolkit used to find their tags. Sometimes the POS tagger did not generate the correct tag and this resulted in the generated results being of inconsistent quality which affected the final results.  
 
 
 \subsubsection{Inferred grammar model}
@@ -27,15 +27,6 @@ Model performances were measured using a perception test in the form of an onlin
 Participants were asked to rate on a scale of 1-5 how closely they felt the sentences resembled human writing. As a guideline they were told that if a sentence appeared to be random words it might receive a 1, if it showed some signs of coherence it might receive a 3, and if it looked like a person wrote it then it would receive a 5. To make the test as fair as possible the sentences were presented to each participant in a random order. 
 
 The survey platform used was Google Forms and the results where pulled into R for processing and graphical representation.
-
-\subsection{Results}
-\label{sec:results}
-The results for the two implemented models, as detailed in ~\ref{sec:method}, were very different. The density distribution of answers can been seen in figures~\ref{fig:hist1} and~\ref{fig:hist2} which show that the results for SM* are rather evenly spread while the results for IGM* are are very skewed with most scores very low. The scores of the human and baseline sentences very high and very low, as was expected. The performance differences become even clearer in figure~\ref{fig:histograms} where we see that IGM* performs no better than the baseline, in fact the baseline has a higher mean score. Looking at the performance of different smoothing methods in figure~\ref{fig:hist2} we see that the Laplace and ELE smoothing methods result in poorer performance than MLE and Good Turing. MLE and Good Turing perform very similarly, but the Good Turing distribution is densest in the 4 and 5 scores while MLE has a greater spread. Good Turing therefore has the best performance according to the perception test.
-
-The IGM* model performs abysmally no matter the smoothing method, with only Laplace smoothing pulling the mean score slightly up.
-
-
-
 \begin{figure}
   \centering
     \subfloat[Performance of each model as well as the human and baseline sentences]    
@@ -57,6 +48,36 @@ The IGM* model performs abysmally no matter the smoothing method, with only Lapl
     \caption{Boxplots of model scores in the perception test. Diamonds represent   means.}%
   \label{fig:boxplots}
 \end{figure}
+
+\begin{table}[]
+\centering
+\caption{Model performance statistics from perception test}
+\label{tab:modelStats}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Model            & Smoothing Method & Mean & Median & Mode \\ \midrule
+Semantic Model   & MLE              & 3.5  & 4      & 5    \\
+Semantic Model   & Laplace          & 2.4  & 2      & 1    \\
+Semantic Model   & ELE              & 2.8  & 3      & 2    \\
+Semantic Model   & Good Turing      & 3.6  & 4      & 4    \\
+Inferred Grammar & MLE              & 1.4  & 1      & 1    \\
+Inferred Grammar & Laplace          & 1.8  & 1      & 1    \\
+Inferred Grammar & ELE              & 1.3  & 1      & 1    \\
+Inferred Grammar & Good Turing      & 1.4  & 1      & 1    \\ \bottomrule
+\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Results}
+\label{sec:results}
+The results for the two implemented models, as detailed in section~\ref{sec:method}, were very different. The density distribution of answers can been seen in figures~\ref{fig:hist1} and~\ref{fig:hist2} which show that the results for SM* are rather evenly spread while the results for IGM* are are very skewed with most scores very low. The scores of the human and baseline sentences very high and very low, as was expected. The performance differences become even clearer in figure~\ref{fig:histograms} where we see that IGM* performs no better than the baseline, in fact the baseline has a higher mean score. Looking at the performance of different smoothing methods in figure~\ref{fig:hist2} we see that the Laplace and ELE smoothing methods result in poorer performance than MLE and Good Turing. MLE and Good Turing perform very similarly, but the Good Turing distribution is densest in the 4 and 5 scores while MLE has a greater spread. Good Turing therefore has the best performance according to the perception test.
+
+The IGM* model performs abysmally no matter the smoothing method, with only Laplace smoothing pulling the mean score slightly up.
+
+
+
+
 
 
 
