@@ -124,25 +124,18 @@ Words were picked from the model randomly given the probability of that word and
 \subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
 
-\subsection{Smoothing}
-The smoothing techniques chosen were:
-\begin{itemize}
-\item Maximum Likelihood Estimate
-\item Laplace smoothing
-\item Expected Likelihood Estimate
-\item Simplified Good-Turing Frequency Estimation
-\end{itemize}
+The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags. "Generate(<t3>|<t1>,<t2>)" which the word model would use as a constraint for selecting the next word, Generate(w3 | w1, w2, <t3>). In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the markov-order.
 
-\textbf{Maybe the sections below are not necessary?}
+\subsection{Smoothing}
 
 \subsubsection{Maximum Likelihood Estimate}
-Here we will write clever stuff about this smoothing technique
+The problem with using only Maximum Likelihood Estimation is that it, in a sense, maximises that likelihood that we'll just generate the training set. Since the training set is limited in scope, our n-gram models will suffer from sparse data in the sense that a lot of n-grams only occur once or a few times in the training set. MLE will hence attribute them a very low or zero likelihood, even though they might be perfectly reasonable n-grams to build sentences upon. We chose three different smoothing techniques besides MLE for testing our models.
 
 \subsubsection{Laplace smoothing}
-Here we will write clever stuff about this smoothing technique
+Laplace smoothing works simply by increasing the count of every n-gram by one, before calculating the MLE values, thus effectively redistributing a chunk of the probability mass from the more frequent n-grams to the less frequent ones.
 
 \subsubsection{Expected Likelihood Estimate}
-Here we will write clever stuff about this smoothing technique
+Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothing, that only increases the count of all n-grams by a fraction between 0 and 1. This is to counter the effect of Laplace smoothing where a very large chunk of the probability mass would get redistributed if the model has a high ratio of low-count n-grams to high-count n-grams.
 
 \subsubsection{Simplified Good-Turing Frequency Estimation}
 Here we will write clever stuff about this smoothing technique
