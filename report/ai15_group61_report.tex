@@ -5,6 +5,7 @@
 \usepackage{graphics}
 \usepackage{fancyhdr}
 \usepackage{subfig}
+\usepackage{subfiles}
 
 \graphicspath{{pictures/}}
 
@@ -90,15 +91,7 @@ This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Sect
 \section{Related work}
 \label{sec:relwork}
 
-In general, according to \cite{Reiter:2000:BNL:331955}, NLG systems are constructed after performing requirements analysis whereby the goals of the NLG system are defined. Varied requirements have produced several different NLG systems over the years. Indeed, the project team designed the two NLG approaches after performing such a requirements analysis. Again \cite{Reiter:2000:BNL:331955} explains that one approach to generating text is not through NLG, rather by a technique known as mail-merge whereby a template is created and the appropriate data is filled in. In designing the experiment for the "Inferred Grammar" model, an approach similar to mail-merge was carried out.
-
-In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored.
-
-Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project. A discussion of n-gram order by \cite{RussellNorvigAIBook3rd} demonstrates that unigrams are a poor representation of the english language and that bigrams and trigrams provide better approximations. Unigrams perform poorly due to the loss of any ordering based on previous words or tokens \cite{RussellNorvigAIBook3rd}. An error in our experiment construction led to the inferred grammar model behaving similarly to this bag of words model.
-
-The Natural Language Tool Kit (NLTK) boosted development productivity through a suite of tools such as probability distribution classes, n-gram decomposition functions, corpora and corpora importing utilities, and speech tagging. We extensively referenced \cite{NLTKBook09} for guidance in use of the NLTK. 
-
-Continuing on the topic of tutorials; the study of smoothing techniques, perplexity, and n-gram models provided by \cite{Jurafsky2000} were referenced in verifying the output produced by our text generation techniques. For example, our output produced by quadgram models were suspiciously close to human authored text. Indeed, \cite{Jurafsky2000} states that the N-gram probability matrices become sparse as order increases, diminishing the set of possible continuations to approximately one. This effectively generates sentences which are found verbatim in the corpus. As such, the discussion in \cite{Jurafsky2000} led to our decision to implement trigram models. Further, perplexity scores are a quantitative correlation to readability, writes Jurafsky et al.   
+\subfile{related_works}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -218,9 +211,17 @@ What answer was found to the research question; what did the study find? Was the
 \section{Summary and Conclusions}
 \label{sec:summary}
 
+In this section we present the results of our experiments. We present the performance of the algorithms tested and which of the techniques used performed best. We show the ngram count affects the sentences generated and what affect smoothing could have on a sentence generation.
+
+We present that using
+
+\subsection{nGram count}
+We testing out different sizes 
 
 
-We list up the problem we ran into and what we could have done different.
+\subsection{Smoothing}
+
+
 
 
 
@@ -229,15 +230,7 @@ We list up the problem we ran into and what we could have done different.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
 \label{sec:contributions}
-We the members of project group 61 unanimously declare that
-we have all equally contributed toward the completion of this
-project.
-
-Should we list up how many hours each member put into the project?
-
-Should we also list up how many hours each part of the project took?
-
-
+In the beginning of the project all team members agreed that we will always work on the project together. For 5 consecutive weekends in a row the team had a NLP workshop. We started each morning with a meeting to plan  the course of our day. We than splitted up into groups of two. All team members had an equal play in the project. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
