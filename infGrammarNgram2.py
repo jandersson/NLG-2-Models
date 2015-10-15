@@ -26,6 +26,8 @@ class nGramModel():
 
         for item in list(grams):
             item = list(item)
+            #if (self.tagged): 
+                #print("gram: ",item)
             # For each new gram
             thisDict = self.model  # point to top-level dictionary
             thisN = n # reset n-counter
@@ -39,6 +41,8 @@ class nGramModel():
                     thisN -= 1
 
                 elif (thisN == 3):
+                    #if (self.tagged): 
+                        #print("n == 3 item: ",item)
                     w3 = item.pop(0)
                     if self.tagged: # Do another level of dicts
                         w3 = w3[0] #just get the word
@@ -49,6 +53,8 @@ class nGramModel():
                     thisN -= 1
 
                 elif (thisN == 2):
+                    #if (self.tagged): 
+                        #print("n == 2 item: ",item)
                     w2 = item.pop(0)
                     if self.tagged:
                         w2 = w2[0] #just get the word
@@ -61,15 +67,14 @@ class nGramModel():
                         thisDict[w1_tag][w1_word] += 1
                     else: 
                         w1 = item.pop(0)
-
                         thisDict[w2][w1] += 1
-                        thisN -= 1
+                    thisN -= 1
 
         self.probNGrams(n,self.model,smoothingF)
         return
 
     def probNGrams(self, n, dic, smoothingF):
-        if (n == 2): # Special for bigrams
+        if (n == 2 and not self.tagged): # Special for bigrams
             self.model = ConditionalProbDist(dic, smoothingF)
             return
 
@@ -98,15 +103,25 @@ class nGramModel():
     def generate(self, words, tag=None):
         order = self.order
         dictionary = self.model
+        #print("words going in: ",list(words))
         while (order > 2):
             if (words[0] not in dictionary):
-                print("uh oh, back off!")
-                return
+                #print("uh oh, back off!")
+                #print("word: ",words[0])
+                #print("Dict: ",dictionary)
+                return None
             dictionary = dictionary[words.pop(0)]
             order -= 1
         if (order == 2 and tag != None):
-            dictionary = dictionary[word.pop(0)]
-            probdist = dictionary[tag]
+            #print("word: ", words[0])
+            dictionary = dictionary[words.pop(0)]
+            if (tag not in dictionary):
+                #print("uh oh, back off!")
+                #print("tag: ",tag)
+                #print(list(dictionary))
+                return None
+            else:
+                probdist = dictionary[tag]
         else: 
             probdist = dictionary[words.pop(0)]
         return probdist.generate()
