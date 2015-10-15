@@ -101,9 +101,12 @@ This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Sect
 \section{Our method}
 \label{sec:method}
 
-Should contain the following: When, where, and how was the study done? What materials were used or who was included in the study groups (patients, etc.)?
-
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
+
+\subsection{Sentence generation}
+The same general method for word generation was used for both of the models; after coming up with a probability distribution for the next word, which is done differently in each of the models, a random word would be picked from the distribution, where the probability of a word being picked is equal to that words probability in the distribution.
+
+
 \subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
 
@@ -113,11 +116,8 @@ To be able to use fallback each model had 2-grams up to n-grams models. If a wor
 
 To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
 
-\subsubsection{Sentence generation}
-Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model.
-
 \subsubsection{hypothesis}
-The Semantic model tries to disambiguate the words 
+The Semantic model aims at modeling chains of sense-disambiguated words by building a model of (word,POS-tag) tuples from a tagged corpus. The idea is to constrain the sense in which a word is used to the word-senses of the preceding words. Using word-senses effectively expands the size of the vocabulary by a factor equal to the average number of different POS-tags for an average word in the corpus. This leads to more sparse data in the model, compared to modeling words by themselves, but it should also eliminate a lot of problems with semantic disagreement in the generated text.
 
 \subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model was built using sentences of POS-tags from a tagged corpus, while the word-grammar model was built using both words and tags. The grammar model would generate a likely next tag based upon the previous tags, which the word model would then use as a constraint for selecting the next word. In terms of data structures, this made the model look like an n+1 order model as compared to the grammar model, but without increasing the number of preceding words that a new word depended on, but instead constraining it to a specific grammatical tag.
@@ -126,11 +126,11 @@ The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-gra
 \subsubsection{hypothesis}
 The idea behind the Inferred grammar model the grammatical structure of sentences separately from the words in the sentences, allowing any semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained on the same training set. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
 
+Since the vocabulary of POS-tags is much smaller than the vocabulary of the words in the the training-set, the data for the grammar model will be much more dense. 
+
 \subsection{Smoothing}
 \label{subsec:smoothing}
 
-
-\subsubsection{Maximum Likelihood Estimate}
 The problem with using only Maximum Likelihood Estimation is that it, in a sense, maximises that likelihood to generate the training set. Since the training set is limited in scope, our n-gram models will suffer from sparse data in the sense that a lot of n-grams only occur once or a few times in the training set. MLE will hence attribute them a very low, even though they might be perfectly reasonable n-grams to build sentences upon. We chose three different smoothing techniques besides MLE for testing our models.
 
 \subsubsection{Laplace smoothing}
@@ -163,6 +163,72 @@ Our implementations unfortunately failed to conform to the specifications we had
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Experimental results}
 \label{sec:exps}
+
+\subsection{Models used in experiment}
+The models used in the experiments, we later realized, were implemented in a way that was inconsistent with the specifications outlined in {Inferred grammar model}. This was a big setback, since it effectively meant that the data gathered from the experiment told us nothing about the hypothetical models outlined in \ref{sec:method}.
+
+We will use SM* and IGM* to refer to the implementation of the Semantic model and Inferred grammar model used in the experiment.
+
+\subsubsection{Semantic model}
+The Semantic model was inconsistent with the specifications in that it 
+
+
+\subsubsection{Inferred grammar model}
+The implementation of the Inferred grammar model (IGM*) was, among the two experimental models, the one most inconsistent with the specifications. 
+
+IGM* separated grammar and words into two models which were used in sequence to generate text. The grammar model modeled trigrams of POS-tags, which was consistent with our specifications. The word-grammar model generated a new word, given the previous two POS-tags. This is inconsistent with the specifications. IGM* would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, walked) for the grammar-word model.
+
+To highlight the inconsistency, IGM generates $(w_3|w_1,w_2,t_3)$, while IGM* generates $(w_3 | t_1,t_2)$.
+
+\subsection{Experimental setup}
+
+\begin{figure}[t!]%
+    \centering
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/boxplot_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/boxplot_resultsByModelAndSmoothing} }}%
+    \qquad
+    \caption{Model performances compared with respect to smoothing methods. Diamond represents means.}%
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/histogram_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/histogram_resultsByModelAndSmootingMethod} }}%
+    \caption{Model performances compared with respect to smoothing methods. Dotted lines represent means.}%
+    \label{fig:example}%
+\end{figure}
+
+Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
+
+\subsection{Experiment ...}
+
+Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]{histogram}
+\caption{A description that makes browsing the paper easy and clearly
+describes what is in the picture. Make sure that the text in the figure
+is large enough to read and that the axes are labelled.}
+\label{fig:histogram}
+\end{figure}
+
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Bla bla & Bla bla & Bla bla \\ \hline
+42 & 42 & 42 \\ \hline
+42 & 42 & 42 \\ \hline
+\end{tabular}
+\caption{A description that makes browsing the paper easy and clearly
+describes what is in the table.}
+\label{tab:results}
+\end{center}
+\end{table}
+
+What answer was found to the research question; what did the study find? Was the tested hypothesis true?
+=======
 \subfile{experiment_results}
 
 
