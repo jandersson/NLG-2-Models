@@ -30,58 +30,35 @@ The survey platform used was Google Forms and the results where pulled into R fo
 
 \subsection{Results}
 \label{sec:results}
-The results for the two implemented models were very different. The density distribution of answers can been seen in figure~\ref{fig:hist1} which shows that the results for the Semantic Model are rather evenly spread while the results for Inferred Grammar Model are are very skewed with most scores very low. Looking at the performance of different smoothing methods in figure~\ref{fig:hist2} we see that the Semantic Model  
+The results for the two implemented models, as detailed in ~\ref{sec:method}, were very different. The density distribution of answers can been seen in figures~\ref{fig:hist1} and~\ref{fig:hist2} which show that the results for SM* are rather evenly spread while the results for IGM* are are very skewed with most scores very low. The scores of the human and baseline sentences very high and very low, as was expected. The performance differences become even clearer in figure~\ref{fig:histograms} where we see that IGM* performs no better than the baseline, in fact the baseline has a higher mean score. Looking at the performance of different smoothing methods in figure~\ref{fig:hist2} we see that the Laplace and ELE smoothing methods result in poorer performance than MLE and Good Turing. MLE and Good Turing perform very similarly, but the Good Turing distribution is densest in the 4 and 5 scores while MLE has a greater spread. Good Turing therefore has the best performance according to the perception test.
+
+The IGM* model performs abysmally no matter the smoothing method, with only Laplace smoothing pulling the mean score slightly up.
+
+
 
 \begin{figure}
   \centering
-    \subfloat[Performance of each model as well as the real and baseline sentences]    
+    \subfloat[Performance of each model as well as the human and baseline sentences]    
     {{\label{fig:hist1}\includegraphics[height=5cm]{results/histogram_resultsByModel} 
     }}%
     \qquad
     \subfloat[Performance of each model and smoothing method]{{\label{fig:hist2}\includegraphics[height=5cm]{results/histogram_resultsByModelAndSmootingMethod} 
     }}%
-    \caption{Density histograms of model performance in the perception test. Dotted lines represent means.}%
+    \caption{Density histograms of model scores in the perception test. Dotted lines represent means.}%
     \label{fig:histograms}%
 \end{figure}
 
 \begin{figure}%
     \centering
-    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[height=6.2cm]{results/boxplot_resultsByModel} }}%    
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\label{fig:boxplot1}\includegraphics[height=6.2cm]{results/boxplot_resultsByModel} }}%    
     \qquad
-    \subfloat[Performance of each model and smoothing method]{{\includegraphics[height=6cm]{results/boxplot_resultsByModelAndSmoothing} }}%
+    \subfloat[Performance of each model and smoothing method]{{\label{fig:boxplot2}\includegraphics[height=6cm]{results/boxplot_resultsByModelAndSmoothing} }}%
     \qquad
-    \caption{Boxplots of model performance in the perception test. Diamonds represent   means.}%
+    \caption{Boxplots of model scores in the perception test. Diamonds represent   means.}%
   \label{fig:boxplots}
 \end{figure}
 
 
-
-Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\linewidth]{histogram}
-\caption{A description that makes browsing the paper easy and clearly
-describes what is in the picture. Make sure that the text in the figure
-is large enough to read and that the axes are labelled.}
-\label{fig:histogram}
-\end{figure}
-
-
-
-\begin{table}
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-Bla bla & Bla bla & Bla bla \\ \hline
-42 & 42 & 42 \\ \hline
-42 & 42 & 42 \\ \hline
-\end{tabular}
-\caption{A description that makes browsing the paper easy and clearly
-describes what is in the table.}
-\label{tab:results}
-\end{center}
-\end{table}
 
 What answer was found to the research question; what did the study find? Was the tested hypothesis true?
 
