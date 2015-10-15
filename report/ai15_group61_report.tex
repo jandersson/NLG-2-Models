@@ -124,6 +124,7 @@ The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-gra
 The idea behind the Inferred grammar model the grammatical structure of sentences separately from the words in the sentences, allowing any semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained on the same training set. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
 
 \subsection{Smoothing}
+\label{subsec:smoothing}
 
 
 \subsubsection{Maximum Likelihood Estimate}
