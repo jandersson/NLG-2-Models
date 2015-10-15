@@ -126,6 +126,8 @@ The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-gra
 \subsubsection{hypothesis}
 The idea behind the Inferred grammar model the grammatical structure of sentences separately from the words in the sentences, allowing any semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained on the same training set. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
 
+Since the vocabulary of POS-tags is much smaller than the vocabulary of the words in the the training-set, the data for the grammar model will be much more dense. 
+
 \subsection{Smoothing}
 
 
@@ -162,9 +164,6 @@ Our implementations unfortunately failed to conform to the specifications we had
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Experimental results}
 \label{sec:exps}
-<<<<<<< HEAD
-
-
 
 \subsection{Models used in experiment}
 The models used in the experiments, we later realized, were implemented in a way that was inconsistent with the specifications outlined in {Inferred grammar model}. This was a big setback, since it effectively meant that the data gathered from the experiment told us nothing about the hypothetical models outlined in {Our method}.
@@ -183,8 +182,6 @@ IGM* separated grammar and words into two models which were used in sequence to 
 To highlight the inconsistency, IGM generates $(w_3|w_1,w_2,t_3)$, while IGM* generates $(w_3 | t_1,t_2)$.
 
 \subsection{Experimental setup}
-=======
->>>>>>> 31026df02542aeb89fad135b06abfd4db5c10cc9
 
 \begin{figure}[t!]%
     \centering
