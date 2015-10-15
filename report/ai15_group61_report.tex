@@ -109,11 +109,18 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \item Punkt Tokenizer Models
 \item Mappings to the Universal Part-Of-Speech Tagset
 \item Conditional Frequency Distribution and Conditional Probability Distribution classes
-\item Classes for each of the above mentioned smoothing techniques
+\item classes for each of the above mentioned smoothing techniques
 \end{itemize}
+
+
+
 
 \subsection{Implementation}
 \label{sec:impl}
+
+Should contain the following: When, where, and how was the study done? What materials were used or who was included in the study groups (patients, etc.)?
+
+
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
 
 \subsection{ngrams}
@@ -133,7 +140,7 @@ To be able to distinguish words that are in the beginning of sentence and in the
 \subsubsection{Sentence generation}
 Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to the bigram model and look for the word in that model.
 
-\subsubsection{Inferred grammar model}
+\subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
 
 \subsection{Smoothing}
@@ -160,6 +167,23 @@ Here we will write clever stuff about this smoothing technique
 Here we will write clever stuff about this smoothing technique
 
 
+\subsection{Implementation}
+\label{sec:impl}
+
+We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
+\begin{itemize}
+\item Brown corpus
+\item Treebank Part of Speech Tagger (Maximum entropy)
+\item Punkt Tokenizer Models
+\item Mappings to the Universal Part-Of-Speech Tagset
+\item Conditional Frequency Distribution and Conditional Probability Distribution classes
+\item classes for each of the above mentioned smoothing techniques
+\end{itemize}
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -167,9 +191,19 @@ Here we will write clever stuff about this smoothing technique
 \section{Experimental results}
 \label{sec:exps}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t!]%
+    \centering
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/boxplot_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/boxplot_resultsByModelAndSmoothing} }}%
+    \qquad
+    \caption{Model performances compared with respect to smoothing methods. Diamond represents means.}%
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/histogram_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/histogram_resultsByModelAndSmootingMethod} }}%
+    \caption{Model performances compared with respect to smoothing methods. Dotted lines represent means.}%
+    \label{fig:example}%
+\end{figure}
 
 \subsection{Experimental setup}
 Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
