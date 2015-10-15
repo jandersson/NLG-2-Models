@@ -47,9 +47,7 @@ K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test.
-
-Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
+In this paper, two different approaches to constructing n-gram models for Natural Language Generation (henceforth NLG) are discussed and contrasted. Our main focus was creating text that would qualify as human generated. We also investigate how different types of smoothing techniques impact the performance of the models. The two models were evaluated via a perception test in the form of an online survey. Unfortunately, errors were identified after the survey was administered, which effectively make the results inconclusive in predicating anything about our models.
 \end{abstract}
 
 
@@ -87,7 +85,8 @@ Our results show that using different smoothing algorithms can change the result
 
 
 \section{Outline}
-This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Section~\ref{sec:relwork} we list out how this project relates to other projects and what we did use from those projects.In Section~\ref{sec:method} we go into details about the implementation of the two models and list up which techniques we used. In Section~\ref{sec:exps} we explain how experiment were done the results.In Section~\ref{sec:summary} we summarize the most important results of this work.Finally in Section~\ref{sec:contributions} we list up the contribution of each team member to the project.
+Beginning in \ref{sec:relwork}, we start off by briefly describing how our project relates to other projects in the field from which we gathered inspiration, and what we learned and applied from those. \ref{sec:method} details the characteristics of our proposed models, and hypothesizes about their functionality. It also contains a brief introduction to the different smoothing techniques employed. \ref{sec:exps}, the design and outcome of the experiment is accounted for, and in \ref{sec:summary} we try to summarize the results of our work. Finally, \ref{sec:contributions} recounts the contributions of the different members of the team to the project.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -126,7 +125,7 @@ The grammar model generates tag by looking at $P(t_3|t_1,t_2)$, and the word-gra
 \subsubsection{Hypothesis}
 The idea behind IGM is that considering the grammatical structure of sentences separately from the words in the sentences will allow semantically disambiguated words (word/tag tuples) with no collocations in the training set to appear next to each other as long as they satisfy the constraints imposed by the grammar-model trained from the same corpus. This, we theorize, will allow for a greater branching factor for the word generation, and thus a greater variance in the sentences produced, without sacrificing much of the grammatical-agreement qualities.
 
-Since the vocabulary of POS-tags is much smaller than the vocabulary of the words in the the training-set, the data for the grammar model will be much more dense. 
+Since the vocabulary of POS-tags is much smaller than the vocabulary of the words in the the training-set, the data for the grammar model will be much more dense.
 
 \subsection{Smoothing}
 \label{subsec:smoothing}
@@ -138,6 +137,7 @@ Laplace smoothing works simply by increasing the count of every n-gram by one, b
 
 \subsubsection{Expected Likelihood Estimate}
 Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothing that only increases the count of all N-grams by a fraction between 0 and 1. This is to counter the effect of Laplace smoothing where a very large chunk of the probability mass would get redistributed if the model has a high ratio of low-count n-grams to high-count N-grams.
+
 
 \subsubsection{Simplified Good-Turing Frequency Estimation}
 \subfile{smoothing-goodturing}
@@ -162,33 +162,28 @@ The models used in the experiments, we later realized, were implemented in a way
 We will use SM* and IGM* to refer to the implementation of the Semantic model and Inferred grammar model used in the experiment.
 
 \subsubsection{Semantic model}
-The SM* model was inconsistent with the specifications in that even though the model provides a word along with its tag, these tags were not used for subsequent word generation. Instead the most recent two words were sent in and a POS tagger in the NLTK toolkit used to find their tags. Sometimes the POS tagger did not generate the correct tag and this resulted in the generated results being of inconsistent quality which affected the final results.  
-
+The SM* model was inconsistent with the specifications in that even though the model provides a word along with its tag, these tags were not used for subsequent word generation. Instead the most recent two words were sent in and a POS tagger to determine tags. Sometimes the POS tagger did not generate the correct tag and this resulted in the generated results being inconsistent with the actual tag in the corpus.
 
 \subsubsection{Inferred grammar model}
-The implementation of the Inferred grammar model (IGM*) was, among the two experimental models, the one most inconsistent with the specifications. 
+The implementation of the Inferred grammar model (IGM*) was, among the two experimental models, the one most inconsistent with the specifications.
 
-IGM* separated grammar and words into two models which were used in sequence to generate text. The grammar model modeled trigrams of POS-tags, which was consistent with our specifications. The word-grammar model generated a new word, given the previous two POS-tags. This is inconsistent with the specifications. IGM* would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, walked) for the grammar-word model.
+IGM* separated grammar and words into two models which were used in sequence to generate text. The grammar model, using trigrams of POS-tags, was consistent with our specifications. The word-grammar model generated a new word conditioned upon the previous two POS-tags generated by the grammar model. This is inconsistent with the specifications. For example, IGM* would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, walked) for the grammar-word model.
 
-To highlight the inconsistency, IGM generates $(w_3|w_1,w_2,t_3)$, while IGM* generates $(w_3 | t_1,t_2)$.
+More formally, IGM generates $(w_3|w_1,w_2,t_3)$, while IGM* generates $(w_3 | t_1,t_2)$.
 
-\subsection{Experimental setup}
+\subsection{Experiment setup}
 \label{sec:expiremental_setup}
-Model performances were measured using a perception test in the form of an online survey with 30 questions. Both models were used to generate 3 sentences for each of the 4 smoothing methods.  Additionally 3 sentences were hand-picked from the Brown corpus and 3 sequences of random words generated to serve as the ``human'' and ``baseline'' models against which our models would be compared. Each group of 3 was picked by generating a few hundred sentences and picking the top 3 with the best perplexity score. The number of sentences was limited to 30 because in test trials a higher number resulted in participants not having the patience to finish. 
+Model performances were measured using a perception test in the form of an online survey with 30 questions. Both models were used to generate 3 sentences for each of the 4 smoothing methods.  Additionally 3 sentences were hand-picked from the Brown corpus and 3 sequences of random words generated to serve as the ``human'' and ``baseline'' models against which our models would be compared. Each group of 3 was picked by generating a few hundred sentences and picking the top 3 with the best perplexity score. The number of sentences was limited to 30 to avoid testing the patience of the survey participants.
 
-Participants were asked to rate on a scale of 1-5 how closely they felt the sentences resembled human writing. As a guideline they were told that if a sentence appeared to be random words it might receive a 1, if it showed some signs of coherence it might receive a 3, and if it looked like a person wrote it then it would receive a 5. To make the test as fair as possible the sentences were presented to each participant in a random order. 
-
-The survey platform used was Google Forms and the results where pulled into R for processing and graphical representation.
-
-
+Participants were asked to rate on a scale of 1-5 how closely they felt the sentences resembled human writing. As a guideline they were told that if a sentence appeared to be random words it might receive a 1, if it showed some signs of coherence it might receive a 3, and if it looked like a person wrote it then it would receive a 5. To make the test as fair as possible the sentences were presented to each participant in a random order. The survey platform used was Google Forms and the results where pulled into R for processing and graphical representation.
 
 \begin{figure}
   \centering
-    \subfloat[Performance of each model as well as the human and baseline sentences]    
-    {{\label{fig:hist1}\includegraphics[height=5cm]{results/histogram_resultsByModel} 
+    \subfloat[Performance of each model as well as the human and baseline sentences]
+    {{\label{fig:hist1}\includegraphics[height=5cm]{results/histogram_resultsByModel}
     }}%
     \qquad
-    \subfloat[Performance of each model and smoothing method]{{\label{fig:hist2}\includegraphics[height=5cm]{results/histogram_resultsByModelAndSmootingMethod} 
+    \subfloat[Performance of each model and smoothing method]{{\label{fig:hist2}\includegraphics[height=5cm]{results/histogram_resultsByModelAndSmootingMethod}
     }}%
     \caption{Density histograms of model scores in the perception test. Dotted lines represent means.}%
     \label{fig:histograms}%
@@ -196,7 +191,7 @@ The survey platform used was Google Forms and the results where pulled into R fo
 
 \begin{figure}%
     \centering
-    \subfloat[Performance of each model as well as the real and baseline sentences]{{\label{fig:boxplot1}\includegraphics[height=6.2cm]{results/boxplot_resultsByModel} }}%    
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\label{fig:boxplot1}\includegraphics[height=6.2cm]{results/boxplot_resultsByModel} }}%
     \qquad
     \subfloat[Performance of each model and smoothing method]{{\label{fig:boxplot2}\includegraphics[height=6cm]{results/boxplot_resultsByModelAndSmoothing} }}%
     \qquad
@@ -226,9 +221,9 @@ Inferred Grammar & Good Turing      & 1.4  & 1      & 1    \\ \bottomrule
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Results}
 \label{sec:results}
-The results for the two implemented models, as detailed in section~\ref{sec:method}, were very different. The density distribution of answers can been seen in figures~\ref{fig:hist1} and~\ref{fig:hist2} which show that the results for SM* are rather evenly spread while the results for IGM* are are very skewed with most scores very low. The scores of the human and baseline sentences very high and very low, as was expected. The performance differences become even clearer in figure~\ref{fig:histograms} where we see that IGM* performs no better than the baseline, in fact the baseline has a higher mean score. Looking at the performance of different smoothing methods in figure~\ref{fig:hist2} we see that the Laplace and ELE smoothing methods result in poorer performance than MLE and Good Turing. MLE and Good Turing perform very similarly, but the Good Turing distribution is densest in the 4 and 5 scores while MLE has a greater spread. Good Turing therefore has the best performance according to the perception test.
+The results for the two implemented models, as detailed in section~\ref{sec:method}, were very different. The density distribution of answers can been seen in figures~\ref{fig:hist1} and~\ref{fig:hist2} which show that the results for SM* are somewhat uniform while the results for IGM* are are positively skewed with most scores very low. The scores of the human and baseline sentences are positively skewed and negatively skewed, respectively. These are expected results for the baseline and gold-standard. The performance differences become even clearer in figure~\ref{fig:histograms} where we see that IGM* performs no better than the baseline, in fact the baseline has a higher mean score. Looking at the performance of different smoothing methods in figure~\ref{fig:hist2} we see that the Laplace and ELE smoothing methods result in poorer performance than MLE and Simple Good-Turing. MLE and Simple Good-Turing perform very similarly, but the Simple Good-Turing distribution is densest in the 4 and 5 scores while MLE has a greater spread. Simple Good-Turing has the best performance according to the perception test.
 
-The IGM* model performs abysmally no matter the smoothing method, with only Laplace smoothing pulling the mean score slightly up.
+The IGM* model perform no better than the randomly generated sentences provided by the baseline no matter the smoothing method, with only Laplace smoothing pulling the mean score slightly up.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,26 +234,12 @@ The IGM* model performs abysmally no matter the smoothing method, with only Lapl
 \section{Summary and Conclusions}
 \label{sec:summary}
 
-In this section we present the results of our experiments. We present the performance of the algorithms tested and which of the techniques used performed best. We show the ngram count affects the sentences generated and what affect smoothing could have on a sentence generation.
-
-We present that using
-
-\subsection{nGram count}
-We testing out different sizes 
-
-
-\subsection{Smoothing}
-
-
-
-
-
-
+\subfile{conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
 \label{sec:contributions}
-In the beginning of the project all team members agreed that we will always work on the project together. For 5 consecutive weekends in a row the team had a NLP workshop. We started each morning with a meeting to plan  the course of our day. We than splitted up into groups of two. All team members had an equal play in the project. 
+In the beginning of the project all team members agreed that we will always work on the project together. For 5 consecutive weekends in a row the team had a NLP workshop. We started each morning with a meeting to plan  the course of our day. We than splitted up into groups of two. All team members had an equal play in the project.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
