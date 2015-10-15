@@ -73,6 +73,31 @@ class utils:
                     ListOfSents.append((sent,perplexity))
         return sorted(ListOfSents,key=lambda x: x[1])[:count] #Sorts the list in descending order
 
+    @staticmethod
+    def parseArguments():
+        import argparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument("-s", "--smoothing", help="The smoothing method to be used")
+        parser.add_argument("-g", "--gramCount", help="N in the n-Gram model", type=int)
+        parser.add_argument("-f", "--trainingSetFractionSize", help="Set the fraction size of the training model", type=float)
+        args = parser.parse_args()
+
+        if args.smoothing == 'MLEProbDist':
+            sm = probability.MLEProbDist
+        elif args.smoothing == 'SimpleGoodTuringProbDist':
+            sm = probability.SimpleGoodTuringProbDist
+        elif args.smoothing == 'LaplaceProbDist':
+            sm = probability.LaplaceProbDist
+        elif args.smoothing == 'ELEProbDist':
+            sm = probability.ELEProbDist
+        else:
+            sm = probability.MLEProbDist
+
+        gr = default_gramCount if args.gramCount is None else args.gramCount
+        tr = default_trainingSetFractionSize if args.trainingSetFractionSize is None else args.trainingSetFractionSize
+
+        return gr,sm,tr
+
 
 class nGramModel:
 
@@ -85,7 +110,6 @@ class nGramModel:
         """
         self.n = n
         self.models = []
-        print("Training the model")
         if n > 1: ##bigrams
 
             self.addPseudo(TaggedSentences,1)
@@ -229,25 +253,33 @@ class nGramModel:
         e = self.entropyOfSentence(sentence)
         return 2**e
 
-print("Loading the corpus!")
+
+##PLEASE CHANGE THE FOLLOWING VALUES IF YOU WANT
 tagSet = "universal"
-brown_sets = [set([i.lower() for i in s]) for s in brown.sents()]
-TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
+default_gramCount = 3
+default_trainingSetFractionSize = 0.7
+default_smoothingTechnique = probability.MLEProbDist
+#STOP EDITING HERE :D
 
 
-##PLEASE CHANGE THE FOLLOWING VALUES
+def main():
 
-gramCount = 3
-trainingSetFractionSize = 0.7
-smoothingTechnique = probability.MLEProbDist
-#smoothingTechnique = probability.LaplaceProbDist
-#smoothingTechnique = probability.ELEProbDist
-#smoothingTechnique = probability.SimpleGoodTuringProbDist
+    gramCount, smoothingTechnique,trainingSetFractionSize = utils.parseArguments()
 
 
-#STOP EDITING :D
+    print("Loading the corpus!")
+    TaggedSent = [w for w in brown.tagged_sents(tagset=tagSet)]
+    global brown_sets
+    brown_sets = [set([i.lower() for i in s]) for s in brown.sents()]
+    print("Starting the training of the model with the following parameters")
+    print("N: " + str(gramCount))
+    print("Smoothing: " + smoothingTechnique.__name__)
+    print("trainingSetFractionSize: " + str(trainingSetFractionSize))
 
-train, test = utils.generateTrainAndTestSets(TaggedSent,trainingSetFractionSize);
-Mo = nGramModel(train, smoothingTechnique, gramCount)
-genSentences = utils.generateSentencesWithPerplexity(Mo,10)
-utils.createSentenceFile(genSentences,smoothingTechnique.__name__,smoothingTechnique.__name__+".txt")
+    train, test = utils.generateTrainAndTestSets(TaggedSent,trainingSetFractionSize);
+    Mo = nGramModel(train, smoothingTechnique, gramCount)
+    genSentences = utils.generateSentencesWithPerplexity(Mo,10)
+    utils.createSentenceFile(genSentences,smoothingTechnique.__name__,smoothingTechnique.__name__+".txt")
+
+if __name__ == "__main__":
+   main()
