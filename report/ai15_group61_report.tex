@@ -4,23 +4,22 @@
 \usepackage{epsfig}
 \usepackage{graphics}
 \usepackage{fancyhdr}
+\usepackage{subfig}
 
 \graphicspath{{pictures/}}
 
 \title{Sentence Generation using Two Models \\ \large{Final Project in the course DD2380 at KTH}}
-
 \author{\hspace*{-0.5cm}
 Group 61\\
 \begin{tabular}{cccc}
 K. Hannesson & J. Jóhannsson & E. Ahlsén & J. Andersson\\
 Agust 20 & January 12 & BIRTHDATE3 & February 10 \\
 hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
-\includegraphics[width=0.13\linewidth]{photo_Kristofer} & 
-\includegraphics[width=0.13\linewidth]{photo_Jokull} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} & 
-\includegraphics[width=0.13\linewidth]{Alan_Turing_photo}
-\end{tabular}
-}
+\includegraphics[width=0.13\linewidth]{photo_Kristofer} &
+\includegraphics[width=0.13\linewidth]{photo_Jokull} &
+\includegraphics[width=0.13\linewidth]{Alan_Turing_photo} &
+\includegraphics[width=0.13\linewidth]{photo_Jonas}
+\end{tabular}}
 % Normally there will not be any pictures but we want
 % these so that we can connect faces to names in the course
 % We also want birthdates so that we can tell people with the same
@@ -32,6 +31,7 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \fancyhf{}
 \lhead{DD2380 ai15} % DO NOT REMOVE!!!!
 \rhead{K. Hannesson, J. Jóhannsson, E. Ahlsén, J. Andersson} %% UPDATE WITH YOUR NAMES
+\fancyfoot[C]{\thepage}
 
 \begin{document}
 
@@ -39,7 +39,7 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test. 
+We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test.
 
 Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
 \end{abstract}
@@ -50,29 +50,29 @@ Our results show that using different smoothing algorithms can change the result
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{NOTE}
-\begin{itemize}
-
-\item The following sections are arranged in the order they would appear in a scientific paper. We think that these sections need to be there and written. However, these are only guidelines and if you think that some of these sections or subsections are irrelevant to you, please feel free to remove them. Similarly, if you want to include more sections or subsections please go ahead. Also feel free to rearrange them according to your convenience, but keeping some common sense (eg.~Introduction cannot come after Conclusions).
-
-\item \textit{Introduction, Related Works, Experimental Results, Discussions, Summary} are sections that MUST be contained.
-
-\item In the section of your \textit{Method}: please do not list your project as log book entries, please talk about the final method you want to present to us. Talk about the method scientifically or technically and not as "I did this..." "Then I tried this..." "this happened...." etc.
-
-\item Do not paste any code unless it is very relevant!
-
-\item The section \textit{Contributions} is a place to express any difference in contributions. The default assumption is that you all agree that all of you had an equal part to play in the project.
-
-\item We suggest that you try to write this as scientifically as possible and not simply like a project report. Good Luck!
-
-\item Please remove \textbf{this} NOTE section in your final report.
-
-\end{itemize}
-\section{Introduction (1--2 pages)}
+%\section*{NOTE}
+%\begin{itemize}
+%
+%\item The following sections are arranged in the order they would appear in a scientific paper. We think that these sections need to be there and written. However, these are only guidelines and if you think that some of these sections or subsections are irrelevant to you, please feel free to remove them. Similarly, if you want to include more sections or subsections please go ahead. Also feel free to rearrange them according to your convenience, but keeping some common sense (eg.~Introduction cannot come after Conclusions).
+%
+%\item \textit{Introduction, Related Works, Experimental Results, Discussions, Summary} are sections that MUST be contained.
+%
+%\item In the section of your \textit{Method}: please do not list your project as log book entries, please talk about the final method you want to present to us. Talk about the method scientifically or technically and not as "I did this..." "Then I tried this..." "this happened...." etc.
+%
+%\item Do not paste any code unless it is very relevant!
+%
+%\item The section \textit{Contributions} is a place to express any difference in contributions. The default assumption is that you all agree that all of you had an equal part to play in the project.
+%
+%\item We suggest that you try to write this as scientifically as possible and not simply like a project report. Good Luck!
+%
+%\item Please remove \textbf{this} NOTE section in your final report.
+%
+%\end{itemize}
+\section{Introduction} %(1--2 pages)
 \label{sec:intro}
 
 Language models are a staple in many domains including speech recognition, optical character
-recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.  
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.
 
 In the following sections we will describe the difference in the models generated and how including grammar affects
 
@@ -94,48 +94,32 @@ In general, according to \cite{Reiter:2000:BNL:331955}, NLG systems are construc
 
 In \cite{Ratnaparkhi00} three methods for text generation are examined. One of the models examined makes use of n-gram models. The paper explores methods for making use of the observed usage of the language in a corpus, but without manually constructing a grammar. A generation of attribute templates was the novel approach by \cite{Ratnaparkhi00} where a sequence of placeholders is constructed. The placeholders are then filled in by the three proposed models. This idea inspired the inferred grammar approach and the structure of this project whereby two models are explored.
 
-Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project.
+Several textbooks explore the topic of language modelling using n-grams and part of speech tags. Works such as \cite{Jurafsky2000}, \cite{RussellNorvigAIBook3rd}, and \cite{Chen98anempirical} provide excellent tutorials to language modelling and were used extensively in this project. A discussion of n-gram order by \cite{RussellNorvigAIBook3rd} demonstrates that unigrams are a poor representation of the english language and that bigrams and trigrams provide better approximations. Unigrams perform poorly due to the loss of any ordering based on previous words or tokens \cite{RussellNorvigAIBook3rd}. An error in our experiment construction led to the inferred grammar model behaving similarly to this bag of words model.
+
+The Natural Language Tool Kit (NLTK) boosted development productivity through a suite of tools such as probability distribution classes, n-gram decomposition functions, corpora and corpora importing utilities, and speech tagging. We extensively referenced \cite{NLTKBook09} for guidance in use of the NLTK. 
+
+Continuing on the topic of tutorials; the study of smoothing techniques, perplexity, and n-gram models provided by \cite{Jurafsky2000} were referenced in verifying the output produced by our text generation techniques. For example, our output produced by quadgram models were suspiciously close to human authored text. Indeed, \cite{Jurafsky2000} states that the N-gram probability matrices become sparse as order increases, diminishing the set of possible continuations to approximately one. This effectively generates sentences which are found verbatim in the corpus. As such, the discussion in \cite{Jurafsky2000} led to our decision to implement trigram models. Further, perplexity scores are a quantitative correlation to readability, writes Jurafsky et al.   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Our method}
 \label{sec:method}
 
-We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
-
-\begin{itemize}
-\item Brown corpus
-\item Treebank Part of Speech Tagger (Maximum entropy)
-\item Punkt Tokenizer Models
-\item Mappings to the Universal Part-Of-Speech Tagset
-\item Conditional Frequency Distribution and Conditional Probability Distribution classes
-\item classes for each of the above mentioned smoothing techniques
-\end{itemize}
-
-
-
-
-\subsection{Implementation}
-\label{sec:impl}
-
 Should contain the following: When, where, and how was the study done? What materials were used or who was included in the study groups (patients, etc.)?
 
 
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
-
-**Here we should talk about different N's we used in the model and how that affected the sentences that were generated.**
-
 \subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
 
 The distribution table contains the n-1-gram plus the tags as a key and the distribution probability of the next word. In the example above the key would be (the, DET), (man, NOUN) and that row in the table would contain the probability distribution of each word and tag that could follow that word given the corpus.
 
-To be able to use fallback the tri-gram model also had a bi-gram model. If a word/tag was not found using the tr-gram model we would fallback to the bi-gram model.
+To be able to use fallback each model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
 
-To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols would correspond to n-1, meaning that 2 start symbols were added to the start and end of sentence in a tri-gram model.
+To be able to distinguish words that are in the beginning of sentence and in the end of sentence we added pseudo symbols to each sentence. The number of symbols added to the start and end of sentence would correspond n-1 in the model. Meaning that 2 start symbols were added to a trigram model.
 
 \subsubsection{Sentence generation}
-Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to the bigram model and look for the word in that model.
+Words were picked from the model randomly given the probability of that word and the context. To find the word to start the sentence we used the start of sentence symbol. We then recursively run through the word estimation function adding a new word to the context until we get a end of sentence symbol. If a word was not found for a given context we backoff to a n-1-gram model and look for the word in that model.
 
 \subsection{Inferred grammar model}
 The second approach separated grammar and words into two models which were used in sequence to generate text. The grammar model provided what POS tag should be next, and the word model provided a word for the given tags, both using trigrams. This would take ``the man walked'' and create the trigrams (DET, NOUN, VERB) for the grammar model, and (DET, NOUN, man) and (NOUN, VERB, walked) for the grammar-word model.
@@ -164,6 +148,19 @@ Here we will write clever stuff about this smoothing technique
 Here we will write clever stuff about this smoothing technique
 
 
+\subsection{Implementation}
+\label{sec:impl}
+
+We split into pairs with each pair implementing their model. We decided to go with Python 3 for the implementation because we knew the NLTK package would provide us with the necessary building blocks to construct and test the two models. These included
+\begin{itemize}
+\item Brown corpus
+\item Treebank Part of Speech Tagger (Maximum entropy)
+\item Punkt Tokenizer Models
+\item Mappings to the Universal Part-Of-Speech Tagset
+\item Conditional Frequency Distribution and Conditional Probability Distribution classes
+\item classes for each of the above mentioned smoothing techniques
+\end{itemize}
+
 
 
 
@@ -175,16 +172,26 @@ Here we will write clever stuff about this smoothing technique
 \section{Experimental results}
 \label{sec:exps}
 
-Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
-bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t!]%
+    \centering
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/boxplot_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/boxplot_resultsByModelAndSmoothing} }}%
+    \qquad
+    \caption{Model performances compared with respect to smoothing methods. Diamond represents means.}%
+    \subfloat[Performance of each model as well as the real and baseline sentences]{{\includegraphics[width=4.5cm]{results/histogram_resultsByModel} }}%
+    \qquad
+    \subfloat[Performance of each model and smoothing method]{{\includegraphics[width=8cm]{results/histogram_resultsByModelAndSmootingMethod} }}%
+    \caption{Model performances compared with respect to smoothing methods. Dotted lines represent means.}%
+    \label{fig:example}%
+\end{figure}
 
 \subsection{Experimental setup}
 Each model was used to generate 5 sentences per smoothing method for a total of 40 sentences. 5 sentences were also picked from the Brown corpus. All the sentences were mixed together randomly and then added to a survey which allowed participants to rate each sentence on a scale of 1 to 5 whether it was created by a human or a computer, with 1 representing definitely a human and 5 definitely a computer. Apart from the sentence scoring we only asked if the participants were native English speakers or not. The survey solution chosen was QuestionPro.
 
 \subsection{Experiment ...}
 
-Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one. 
+Here we talk about how which smoothing technique worked best for us why the results were the way they were. We also explain why the model containing the grammar was better than the inferred grammar one.
 
 \begin{figure}
 \centering
@@ -220,7 +227,7 @@ What answer was found to the research question; what did the study find? Was the
 
 
 
-We list up the problem we ran into and what we could have done different. 
+We list up the problem we ran into and what we could have done different.
 
 
 
@@ -241,6 +248,7 @@ Should we also list up how many hours each part of the project took?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 \bibliographystyle{plain}
 \bibliography{reflist}
 \end{document}
