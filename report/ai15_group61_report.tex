@@ -40,9 +40,10 @@ hannesso@kth.se & jokull@kth.se & edvarda@kth.se & jonand8@kth.se \\
 \thispagestyle{fancy}
 
 \begin{abstract}
-We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing affect the outcome by doing a perception test.
+We present two different techniques for creating n-gram models for natural language processing. Our main focus was creating sentences that would qualify as human generated sentences. We investigate how different type of smoothing algorithms affect the outcome by doing a perception test.
 
-Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated.
+Our results show that using different smoothing algorithms can change the results remarkably and the way people perceive the sentences. Finally results show that XXXXXX smoothing algorithm outperform others algorithms evaluated. In Section \ref{sec:exps} we show how using different values for N in a n-gram models affect the outcome and why. 
+
 \end{abstract}
 
 
@@ -73,15 +74,9 @@ Our results show that using different smoothing algorithms can change the result
 \label{sec:intro}
 
 Language models are a staple in many domains including speech recognition, optical character
-recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately\textbf{[Chen-Goodman]}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.
+recognition, handwriting recognition, machine translation, and spelling correction. The dominant technology in language modeling is n-gram models, which are straightforward to construct except for the issue of smoothing, a technique used to better estimate probabilities when there is insufficient data to estimate probabilities accurately     \cite{Chen98anempirical}. Many different techniques have been proposed for smoothing n-gram models. In this project we show how different smoothing techniques work and how they will affect the sentences generated.
 
-In the following sections we will describe the difference in the models generated and how including grammar affects
-
-
-**
-Why was the study undertaken? What was the research question, the tested hypothesis or the purpose of the research?
-**
-
+In the following sections we will describe the difference in the models generated and how including grammar affects the generated sentences.
 
 \section{Outline}
 This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Section~\ref{sec:relwork} we list out how this project relates to other projects and what we did use from those projects.In Section~\ref{sec:method} we go into details about the implementation of the two models and list up which techniques we used. In Section~\ref{sec:exps} we explain how experiment were done the results.In Section~\ref{sec:summary} we summarize the most important results of this work.Finally in Section~\ref{sec:contributions} we list up the contribution of each team member to the project.
@@ -99,7 +94,6 @@ This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Sect
 \label{sec:method}
 
 Should contain the following: When, where, and how was the study done? What materials were used or who was included in the study groups (patients, etc.)?
-
 
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
 \subsection{Built in grammar model}
@@ -138,8 +132,7 @@ Here we will write clever stuff about this smoothing technique
 Here we will write clever stuff about this smoothing technique
 
 \subsubsection{Simplified Good-Turing Frequency Estimation}
-Here we will write clever stuff about this smoothing technique
-
+\subfile{smoothing-goodturing}
 
 \subsection{Implementation}
 \label{sec:impl}
@@ -153,12 +146,6 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \item Conditional Frequency Distribution and Conditional Probability Distribution classes
 \item classes for each of the above mentioned smoothing techniques
 \end{itemize}
-
-
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -218,9 +205,17 @@ What answer was found to the research question; what did the study find? Was the
 \section{Summary and Conclusions}
 \label{sec:summary}
 
+In this section we present the results of our experiments. We present the performance of the algorithms tested and which of the techniques used performed best. We show the ngram count affects the sentences generated and what affect smoothing could have on a sentence generation.
+
+We present that using
+
+\subsection{nGram count}
+We testing out different sizes 
 
 
-We list up the problem we ran into and what we could have done different.
+\subsection{Smoothing}
+
+
 
 
 
@@ -229,15 +224,7 @@ We list up the problem we ran into and what we could have done different.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}
 \label{sec:contributions}
-We the members of project group 61 unanimously declare that
-we have all equally contributed toward the completion of this
-project.
-
-Should we list up how many hours each member put into the project?
-
-Should we also list up how many hours each part of the project took?
-
-
+In the beginning of the project all team members agreed that we will always work on the project together. For 5 consecutive weekends in a row the team had a NLP workshop. We started each morning with a meeting to plan  the course of our day. We than splitted up into groups of two. All team members had an equal play in the project. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
