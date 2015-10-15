@@ -95,7 +95,6 @@ This paper is structured as follows: In Section 1 we talk about XXXXXXX. In Sect
 
 Should contain the following: When, where, and how was the study done? What materials were used or who was included in the study groups (patients, etc.)?
 
-
 The group came up with the idea to compare two different approaches to generating text from a corpus, both including grammar but in different ways. To be able to compare them at the same level both approaches used the Brown corpus and trigrams, with fallback to bigrams allowed. A few smoothing techniques were picked for use in both approaches.
 \subsection{Built in grammar model}
 The first approach was to create a model that included both word and grammar information. This was achieved by generating trigrams where each word was a tuple of the word and its associated Part-Of-Speech (POS) tag. A trigram from ``the man walked'' would be (the, DET), (man, NOUN), (walked, VERB))
@@ -133,8 +132,7 @@ Here we will write clever stuff about this smoothing technique
 Here we will write clever stuff about this smoothing technique
 
 \subsubsection{Simplified Good-Turing Frequency Estimation}
-Here we will write clever stuff about this smoothing technique
-
+\subfile{smoothing-goodturing}
 
 \subsection{Implementation}
 \label{sec:impl}
@@ -148,12 +146,6 @@ We split into pairs with each pair implementing their model. We decided to go wi
 \item Conditional Frequency Distribution and Conditional Probability Distribution classes
 \item classes for each of the above mentioned smoothing techniques
 \end{itemize}
-
-
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

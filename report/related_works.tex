@@ -9,10 +9,12 @@ Several textbooks explore the topic of language modelling using n-grams and part
 
 The Natural Language Tool Kit (NLTK) boosted development productivity through a suite of tools such as probability distribution classes, n-gram decomposition functions, corpora and corpora importing utilities, and speech tagging. We extensively referenced \cite{NLTKBook09} for guidance in use of the NLTK. 
 
-Continuing on the topic of tutorials; the study of smoothing techniques, perplexity, and n-gram models provided by \cite{Jurafsky2000} were referenced in verifying the output produced by our text generation techniques. For example, our output produced by quadgram models were suspiciously close to human authored text. Indeed, \cite{Jurafsky2000} states that the N-gram probability matrices become sparse as order increases, diminishing the set of possible continuations to approximately one. This effectively generates sentences which are found verbatim in the corpus. As such, the discussion in \cite{Jurafsky2000} led to our decision to implement trigram models. 
+Continuing on the topic of tutorials; the study of smoothing techniques, perplexity, and n-gram models provided by \cite{Jurafsky2000} were referenced in verifying the output produced by our text generation techniques. For example, our output produced by quad-gram models were suspiciously close to human authored text. Indeed, \cite{Jurafsky2000} states that the N-gram probability matrices become sparse as order increases, diminishing the set of possible continuations to approximately one. This effectively generates sentences which are found verbatim in the corpus. As such, the discussion in \cite{Jurafsky2000} led to our decision to implement trigram models. 
 
 %Further, perplexity scores are a quantitative correlation to readability, writes Jurafsky et al.  
 
-Smoothing has been shown, empirically, to improve the prediction accuracy of N-gram models by \cite{chen-smoothing}. By making the distributions within the N-gram model more uniform, pushing down high probabilitities and increasing low, the model can account for zero probabilities. It is further argued by \cite{chen-smoothing} that Add-One or Laplace smoothing performs poorly, due to shaving off too much probability from the higher count N-grams.  
+Smoothing has been shown, empirically, to improve the prediction accuracy of N-gram models by \cite{chen-smoothing}. We referenced this work in determining which smoothing techniques to implement in our experiment. Discussion of the employed smoothing techniques are discussed 
+
+%By making the distributions within the N-gram model more uniform, pushing down high probabilitities and increasing low, the model can account for zero probabilities. It is further argued by \cite{chen-smoothing} that Add-One or Laplace smoothing performs poorly, due to shaving off too much probability from the higher count N-grams.  
 
 \end{document} 
