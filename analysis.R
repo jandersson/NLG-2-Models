@@ -53,15 +53,26 @@ resultsForModels$Model <- factor(resultsForModels$Model,
 
 
 # average response per model and smoothing method
+Mode <- function(x) {
+  ux <- unique(x[!is.na(x)])
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
 meansByModelAndMethod <- resultsForModels[2:4] %>% 
                          group_by(Model, SmoothingMethod) %>% 
                          select(value) %>%
-                         summarise(means = mean(value, na.rm = T))
+                         summarise(means = mean(value, na.rm = T), 
+                                   median = median(value, na.rm = T),
+                                   mode = Mode(value))
+melt(meansByModelAndMethod)
+ggplot(melt(meansByModelAndMethod), aes(x = SmoothingMethod, y=value)) + geom_bar()
 
 meansByModel <- results[2:4] %>% 
                 group_by(Model) %>% 
                 select(value) %>%
-                summarise(means = mean(value, na.rm = T))
+                summarise(means = mean(value, na.rm = T),
+                          median = median(value, na.rm = T),
+                          mode = Mode(value))
 
 
 
