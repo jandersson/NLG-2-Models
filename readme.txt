@@ -40,7 +40,7 @@ There are 2 optional parameters
     Possible values: {2, 3, 4}
 
 examples
-python SemanticModel.py -s ELEProbDist -g 3 -f 0.6
+python SemanticModel.py -s ELEProbDist -g 3
 python SemanticModel.py -smoothing ELEProbDist -gramCount 3
-python InfGrammarMain.py -s ELEProbDist -g 3 -f 0.6
+python InfGrammarMain.py -s ELEProbDist -g 3
 python InfGrammarMain.py -smoothing ELEProbDist -gramCount 3
