@@ -64,12 +64,13 @@ class utils:
     def generateSentencesWithPerplexity(M, count):
         print("Starting the sentence generation")
         ListOfSents = []
-        while len(ListOfSents) < 5:
+        while len(ListOfSents) < 10:
             taggedSent, sent = M.createSentenceWithTags()
             perplexity = M.perplexity(taggedSent)
             if not utils.IsSentenceInBrownCorpus(sent):
                 if 5 < len(sent.split(" ")) < 14:
-                    print("Adding sentence: " + str(len(ListOfSents)+1))
+                    print("Adding sentence " + str(len(ListOfSents)+1) + " to file")
+                    print('Sentence: "' +sent + '"')
                     ListOfSents.append((sent,perplexity))
         return sorted(ListOfSents,key=lambda x: x[1])[:count] #Sorts the list in descending order
 
@@ -79,7 +80,6 @@ class utils:
         parser = argparse.ArgumentParser()
         parser.add_argument("-s", "--smoothing", help="The smoothing method to be used")
         parser.add_argument("-g", "--gramCount", help="N in the n-Gram model", type=int)
-        parser.add_argument("-f", "--trainingSetFractionSize", help="Set the fraction size of the training model", type=float)
         args = parser.parse_args()
 
         if args.smoothing == 'MLEProbDist':
@@ -94,9 +94,8 @@ class utils:
             sm = probability.MLEProbDist
 
         gr = default_gramCount if args.gramCount is None else args.gramCount
-        tr = default_trainingSetFractionSize if args.trainingSetFractionSize is None else args.trainingSetFractionSize
 
-        return gr,sm,tr
+        return gr,sm
 
 
 class nGramModel:
@@ -264,7 +263,7 @@ default_smoothingTechnique = probability.MLEProbDist
 
 def main():
 
-    gramCount, smoothingTechnique,trainingSetFractionSize = utils.parseArguments()
+    gramCount, smoothingTechnique = utils.parseArguments()
 
 
     print("Loading the corpus!")
@@ -274,10 +273,8 @@ def main():
     print("Starting the training of the model with the following parameters")
     print("N: " + str(gramCount))
     print("Smoothing: " + smoothingTechnique.__name__)
-    print("trainingSetFractionSize: " + str(trainingSetFractionSize))
 
-    train, test = utils.generateTrainAndTestSets(TaggedSent,trainingSetFractionSize);
-    Mo = nGramModel(train, smoothingTechnique, gramCount)
+    Mo = nGramModel(TaggedSent, smoothingTechnique, gramCount)
     genSentences = utils.generateSentencesWithPerplexity(Mo,10)
     utils.createSentenceFile(genSentences,smoothingTechnique.__name__,smoothingTechnique.__name__+".txt")
 
