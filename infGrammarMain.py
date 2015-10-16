@@ -2,10 +2,7 @@ from infGrammarNgram import nGramModel
 from nltk.corpus import brown
 
 # Smoothing Techniques
-from nltk.probability import ELEProbDist
-from nltk.probability import SimpleGoodTuringProbDist
 from nltk.probability import LaplaceProbDist
-from nltk.probability import MLEProbDist
 
 from math import log
 import random
@@ -18,10 +15,17 @@ def main():
     Provide an entry point into program.
     :return: None
     """
-    order = 3
-    smoothing = SimpleGoodTuringProbDist
+
+    order, smoothing = SemanticModel.utils.parseArguments()
+    print("Starting the training of the model with the following parameters")
+    print("N: " + str(order))
+    print("Smoothing: " + smoothing.__name__)
+
 
     ##NGRAM MODEL FOR GRAMMAR
+    print('Loading the corpus')
+    global brown_sents
+    brown_sents = [set([i.lower() for i in s]) for s in brown.sents()]
     tagged_sents_ = brown.tagged_sents()
     sents = list(tagged_sents_) #needs to be mutable to insert start/end tokens if working with tags
     sents = remove_punctuation(sents)
@@ -218,7 +222,7 @@ def generateText(model, sents):
         print(text.strip())
         prevTk = list()
 
-brown_sents = [set([i.lower() for i in s]) for s in brown.sents()]
+
 
 def findSent(iSent):
     """
