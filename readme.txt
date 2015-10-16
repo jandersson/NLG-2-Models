@@ -27,8 +27,8 @@ There are two files representing the two models implemented
 * SemanticModel.py
 * InfGrammar.py
 
-To run the code open up a terminal window and use python to run them
-There are 2 optional parameters
+To run the code open up a terminal window and use python to run the files
+There are 2 optional parameters:
 
 "-s", "--smoothing"
     The smoothing method to be used
