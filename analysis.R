@@ -36,7 +36,7 @@ results$SmoothingMethod <- factor(results$SmoothingMethod,
                                   ordered = TRUE)
 results$Model <- factor(results$Model, 
                                   levels = c("Perfect", "SmoothOperator", "InferredGrammar", "Random"),
-                                  labels = c("Human", "Words+Grammar", "Inferred Grammar", "Baseline"),
+                                  labels = c("Human", "Semantic Model", "Inferred Grammar", "Baseline"),
                                   ordered = TRUE)
 
 
@@ -46,7 +46,7 @@ resultsForModels$SmoothingMethod <- factor(resultsForModels$SmoothingMethod,
                                   ordered = TRUE)
 resultsForModels$Model <- factor(resultsForModels$Model, 
                         levels = c("SmoothOperator", "InferredGrammar"),
-                        labels = c("Words+Grammar", "Inferred Grammar"),
+                        labels = c("Semantic Model", "Inferred Grammar"),
                         ordered = TRUE)
 
 
@@ -85,7 +85,7 @@ ggplot(resultsForModels, aes(x=value)) +
   geom_histogram(aes(y=..density..), alpha=I(0.5), color="white", fill="black") +
   geom_vline(data=meansByModelAndMethod, aes(xintercept=means), colour="black", linetype="dashed", size=1) +
   xlab("Score") +
-  ggtitle("Results by model and smoothing method") +
+  #ggtitle("Results by model and smoothing method") +
   theme_bw(base_family = "Roboto Regular", base_size = 16)
 
 dev.off()
@@ -105,49 +105,33 @@ ggplot(results, aes(x=value)) +
   geom_histogram(aes(y=..density..), alpha=I(0.5), color="white", fill="black") +
   geom_vline(data=meansByModel, aes(xintercept=means), linetype="dashed", size=1, colour="black") +
   xlab("Score") +
-  ggtitle("Results by model") +
+  #ggtitle("Results by model") +
   theme_bw(base_family = "Roboto Regular", base_size = 16)
   
 dev.off()
 
-# Boxplot results per model
-png(filename=paste(resultsFolder, "boxplot_resultsByModel.png", sep=""), 
-    type="cairo",
-    units="px", 
-    width=600, 
-    height=600, 
-    pointsize=12, 
-    res=96)
-
-ggplot(results, aes(x=Model, y=value)) +
-  #facet_wrap(~Model) +
-  geom_boxplot() +
-  stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  xlab("Model") + 
-  ylab("Score") +
-  ggtitle("Results by model") +
-  theme_bw(base_family = "Roboto Regular", base_size = 16)
-
-dev.off()
 
 # Boxplot results per model and smoothing tecnique
-png(filename=paste(resultsFolder, "boxplot_resultsByModelAndSmoothing.png", sep=""), 
-    type="cairo",
-    units="px", 
-    width=800, 
-    height=600, 
-    pointsize=12, 
-    res=96)
-
-ggplot(resultsForModels, aes(x=SmoothingMethod, y=value)) +
-  facet_grid(~Model) +
-  geom_boxplot() +
-  stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  xlab("Smoothing Method") +
-  ylab("Score") +
-  ggtitle("Results by model and smoothing method")+
-  theme_bw(base_family = "Roboto Regular", base_size = 14)
-dev.off()
+  png(filename=paste(resultsFolder, "boxplot_resultsByModelAndSmoothing.png", sep=""), 
+      type="cairo",
+      units="px", 
+      width=900, 
+      height=700, 
+      pointsize=12, 
+      res=121)
+  
+  ggplot(resultsForModels, aes(x=SmoothingMethod, y=value)) +
+    facet_grid(.~Model) +
+    geom_boxplot() +
+    stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
+    xlab("Smoothing Method") +
+    ylab("Score") +
+    #ggtitle("Performance of model and smoothing method")+
+    theme_bw(base_family = "Roboto Regular", base_size = 20) +
+    theme(axis.text.x = element_text(size = 16, angle = 90, vjust = 1, hjust=1)) +
+    theme(plot.title = element_text(size = 16))
+  
+  dev.off()
 
 
 png(filename=paste(resultsFolder, "boxplot_resultsForPerfectAndRandom.png", sep=""), 
@@ -169,7 +153,34 @@ ggplot(resultsForPerfectAndBaseline, aes(x=Model, y=value)) +
 
 dev.off()
 
+# Boxplot results per model
 
+results$Model <- factor(results$Model, 
+                        #levels = c("Perfect", "SmoothOperator", "InferredGrammar", "Random"),
+                        labels = c("Human", "Semantic Mdl", "Inferred Gr", "Baseline"),
+                        ordered = TRUE)
+
+png(filename=paste(resultsFolder, "boxplot_resultsByModel.png", sep=""), 
+    type="cairo",
+    units="px", 
+    width=500, 
+    height=700, 
+    pointsize=16, 
+    res=121)
+
+ggplot(results, aes(x=Model, y=value)) +
+  geom_boxplot() +
+  stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
+  xlab("Model")  + 
+  ylab("Score") +
+  #ggtitle("Performance of models") +
+  theme_bw(base_family = "Roboto Regular", base_size = 24) +
+  theme(axis.text.x = element_text(size = 20, angle = 45, vjust = 1, hjust=1)) +
+  theme(plot.title = element_text(size = 18))
+#theme(axis.text.x = element_text(size = 20, vjust = 1, hjust=1)) +
+#coord_flip()
+
+dev.off()
 
 
 

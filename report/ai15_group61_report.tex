@@ -112,7 +112,7 @@ The probability distribution table contains the first two word/tag tuples as a k
 
 The Semantic Model generates words by looking at $P((w_3, t_3)|(w_1,t_1),(w_2, t_2))$.
 
-%To be able to use fallback the model had 2-grams up to n-grams models. If a word/tag was not found using the n-gram model we would fallback to the n-1-gram model and so forth.
+%To be able to use fallback the model had 2-grams up to N-grams models. If a word/tag was not found using the N-gram model we would fallback to the n-1-gram model and so forth.
 
 \subsubsection{Hypothesis}
 The Semantic Model aims to model chains of sense-disambiguated words. This constrains the sense in which a word is used to the word-senses of the preceding words. Using word-senses may effectively expand the size of the vocabulary by a factor equal to the average number of different POS-tags for an average word in the corpus. This leads to sparser data in the model, compared to modeling words by themselves, but it should also eliminate a lot of problems with semantic disagreement in the generated text.
@@ -133,10 +133,10 @@ Since the vocabulary of POS-tags is much smaller than the vocabulary of the word
 The problem with using only Maximum Likelihood Estimation is that it, in a sense, maximises the likelihood to generate the training set. Since the training set is limited in scope, our N-gram models will suffer from sparse data in the sense that a lot of N-grams only occur once or a few times in the training set. MLE will therefore attribute them a very low probability, even though they might be perfectly reasonable N-grams to build sentences upon. We chose three different smoothing techniques besides MLE for testing our models.
 
 \subsubsection{Laplace smoothing}
-Laplace smoothing works simply by increasing the count of every n-gram by one, before calculating the MLE values, thus effectively redistributing a chunk of the probability mass from the more frequent n-grams to the less frequent ones.
+Laplace smoothing works simply by increasing the count of every N-gram by one, before calculating the MLE values, thus effectively redistributing a chunk of the probability mass from the more frequent N-grams to the less frequent ones.
 
 \subsubsection{Expected Likelihood Estimate}
-Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothing that only increases the count of all N-grams by a fraction between 0 and 1. This is to counter the effect of Laplace smoothing where a very large chunk of the probability mass would get redistributed if the model has a high ratio of low-count n-grams to high-count N-grams.
+Expected Likelihood Estimate, or 'add-delta', is a variation of Laplace smoothing that only increases the count of all N-grams by a fraction between 0 and 1. This is to counter the effect of Laplace smoothing where a very large chunk of the probability mass would get redistributed if the model has a high ratio of low-count N-grams to high-count N-grams.
 
 
 \subsubsection{Simplified Good-Turing Frequency Estimation}
