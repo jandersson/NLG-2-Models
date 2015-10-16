@@ -25,7 +25,7 @@ RUNNING THE CODE
 
 There are two files representing the two models implemented
 * SemanticModel.py
-* InfGrammarMain.py
+* InfGrammar.py
 
 To run the code open up a terminal window and use python to run them
 There are 2 optional parameters
@@ -42,5 +42,5 @@ There are 2 optional parameters
 examples
 python SemanticModel.py -s ELEProbDist -g 3
 python SemanticModel.py -smoothing ELEProbDist -gramCount 3
-python InfGrammarMain.py -s ELEProbDist -g 3
-python InfGrammarMain.py -smoothing ELEProbDist -gramCount 3
+python InfGrammar.py -s ELEProbDist -g 3
+python InfGrammar.py -smoothing ELEProbDist -gramCount 3
