@@ -10,8 +10,6 @@ class nGramModel():
     def __init__(self, samples, estimator, n = 2, isTagged=False):
         self.tagged = isTagged
         self.order = n
-        print("my order: " + str(self.order))
-
         self.grams = list()
         for sent in samples:
             self.grams += list(nltk.ngrams(sent,n)) # get iterator over ngrams
