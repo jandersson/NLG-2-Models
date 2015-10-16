@@ -12,15 +12,12 @@ def main():
     Provide an entry point into program.
     :return: None
     """
-    order = 3
-    smoothing = ELEProbDist
     order, smoothing = SemanticModel.utils.parseArguments()
     print("Starting the training of the model with the following parameters")
     print("N: " + str(order))
     print("Smoothing: " + smoothing.__name__)
 
     global brown_sents
-    ##NGRAM MODEL FOR GRAMMAR
     sents_ = brown.tagged_sents()
     sents = list(sents_) #needs to be mutable to insert start/end tokens if working with tags
     sents = remove_punctuation(sents)
@@ -30,7 +27,7 @@ def main():
         sentence_tags = [tag for (word, tag) in sentence if word.isalnum()]
         sentences_of_tags.append(sentence_tags)
 
-
+    ##NGRAM MODEL FOR GRAMMAR
     testModelGrammar = generateModelFromSentences(sentences_of_tags, smoothing, order) #Create trigram of only grammar
 
     ##NGRAM MODEL FOR TAGS AND WORDS
@@ -118,7 +115,8 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
     gram_prevTk = list()
     word_prevTk = list()
     grammar_order = grammar_model.getOrder()
-    for _ in range(nrSents): #Generate a sentence, nrSents times
+    loopCount = 0
+    while loopCount <= nrSents: #Generate a sentence, nrSents times
         text = "" #Initialize empty string
         for _ in range(grammar_order-1): #Generate sentences on a given word/symbol (here it is the start symbol)
             gram_prevTk.append("<s>")
@@ -143,6 +141,7 @@ def infGrammarGenerate(grammar_model, word_tag_model, nrSents):
         print(text.strip())
         gram_prevTk = list()
         word_prevTk = list()
+        loopCount += 1
 
 
 def split(sentences, fraction):
