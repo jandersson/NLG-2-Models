@@ -6,8 +6,9 @@ from nltk.probability import MLEProbDist
 import collections
 
 class nGramModel():
-    
+
     def __init__(self, samples, estimator, n = 2, isTagged=False):
+
         self.tagged = isTagged
         self.order = n
         self.grams = list()
@@ -32,44 +33,51 @@ class nGramModel():
                 if( thisN > 3):
                     wn = item.pop(0) # pop first word in gram
                     if self.tagged:
-                        wn = wn[1] #just get the tag
+                        wn = wn[0] #just get the word
                     thisDict = thisDict[wn] ## returns dict.
                     thisN -= 1
 
                 elif (thisN == 3):
                     w3 = item.pop(0)
-                    if self.tagged:
-                        w3 = w3[1] #just get the tag
-                    if w3 not in thisDict:
-                        thisDict[w3] = ConditionalFreqDist()
-
+                    if self.tagged: # Do another level of dicts
+                        w3 = w3[0] #just get the word
+                    else: # Make freq-dists
+                        if w3 not in thisDict:
+                            thisDict[w3] = ConditionalFreqDist()
                     thisDict = thisDict[w3]
                     thisN -= 1
 
                 elif (thisN == 2):
                     w2 = item.pop(0)
-                    w1 = item.pop(0)
                     if self.tagged:
-                        w2 = w2[1] #just get the tag
-                        w1 = w1[0] #just get the word
-                    thisDict[w2][w1] += 1
+                        w2 = w2[0] #just get the word
+                        if w2 not in thisDict: # Make a freq-dist for tags of w1 under w2
+                            thisDict[w2] = ConditionalFreqDist()
+                        thisDict = thisDict[w2]
+                        w1 = item.pop(0)
+                        w1_tag = w1[1]
+                        w1_word = w1[0]
+                        thisDict[w1_tag][w1_word] += 1
+                    else:
+                        w1 = item.pop(0)
+                        thisDict[w2][w1] += 1
                     thisN -= 1
 
         self.probNGrams(n,self.model,smoothingF)
         return
 
     def probNGrams(self, n, dic, smoothingF):
-        if (n == 2): # Special for bigrams
+        if (n == 2 and not self.tagged): # Special for bigrams
             self.model = ConditionalProbDist(dic, smoothingF)
-            return
 
         else:
             for (k,v) in dic.items():
-                if (n == 3):
+                if (n == 3 and not self.tagged):
+                    dic[k] = ConditionalProbDist(v, smoothingF)
+                elif (n == 2 and self.tagged):
                     dic[k] = ConditionalProbDist(v, smoothingF)
                 else:
                     self.probNGrams(n-1, v, smoothingF)
-        return
 
     def estimateWord(self, word, numberOfEstimates):
         wordEstimates = {}
@@ -83,23 +91,27 @@ class nGramModel():
         return self.model[previous].prob(word)
 
 
-    def generate(self, words):
+    def generate(self, words, tag=None):
         order = self.order
         dictionary = self.model
         while (order > 2):
             if (words[0] not in dictionary):
-                print("uh oh, back off!")
-                return
+                return None
             dictionary = dictionary[words.pop(0)]
             order -= 1
-
-        probdist = dictionary[words.pop(0)]
+        if (order == 2 and tag != None):
+            dictionary = dictionary[words.pop(0)]
+            if (tag not in dictionary):
+                return None
+            else:
+                probdist = dictionary[tag]
+        else:
+            probdist = dictionary[words.pop(0)]
         return probdist.generate()
 
     def probSentence(self, sentence):
         prob = 1
         for i in range(len(sentence)-1):
-            #print(self.model[sentence[i]].prob(sentence[i+1]))
             prob *= self.model[sentence[i]].prob(sentence[i+1])
         return prob
 
@@ -111,12 +123,3 @@ class nGramModel():
 
 def rec_dd():
     return collections.defaultdict(rec_dd)
-'''
-sentences = [[w.lower() for w in s if w.isalnum()] for s in brown.sents(categories='adventure')[:10000]]
-adventureModel = nGramModel(sentences,MLEProbDist,4)
-
-testSentence = ["<s>","i", "can", "like", "apples","</s>"]
-#print(adventureModel.probSentence(testSentence))
-
-print(adventureModel.estimateWord('in the car',5))
-'''
